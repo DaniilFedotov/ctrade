@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% load static %}
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <title>{% block title %}Title{% endblock title %}</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-light" style="background-color: #65bb65">
+        <div class="container">
+          {% with request.resolver_match.view_name as view_name %}
+          <ul class="nav nav-pills">
+            <li class="nav-item">
+              <a class="nav-link {% if view_name == 'deals:deal' %}active{% endif %}"
+                 href="{% url 'deals:deal' %}"
+              >
+                Deals
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if view_name == 'traders:trade' %}active{% endif %}"
+                 href="{% url 'traders:trade' %}"
+              >
+                Trading bots
+              </a>
+            </li>
+          </ul>
+          {% endwith %}
+        </div>
+      </nav>
+    </header>
+    <main>
+      {% block content %}
+        Content
+      {% endblock content %}
+    </main>
+  </body>
+</html>
