@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'deals.apps.DealsConfig',
+    'traders.apps.TradersConfig',
 ]
 
 MIDDLEWARE = [
