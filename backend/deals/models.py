@@ -14,6 +14,7 @@ class Deal(models.Model):
     )
     status = models.CharField(
         verbose_name='Status of deal',
+        max_length=20,
         choices=STATUS_CHOICES,
     )
     purchase_price = models.FloatField(
@@ -42,6 +43,7 @@ class Trader(models.Model):
     )
     status = models.CharField(
         verbose_name='Status of trading bot',
+        max_length=20,
         choices=STATUS_CHOICES,
     )
     initial_deposit = models.FloatField(
@@ -53,5 +55,6 @@ class Trader(models.Model):
     )
     market = models.CharField(
         verbose_name='The market where the bot trades',
+        max_length=20,
         choices=MARKET_CHOICES,
     )
