@@ -1,4 +1,4 @@
-id,creation_date,status,initial_deposit,current_deposit,market
-1,2024-01-31T21:08:21.567Z,W,1035,1045,S
-2,2024-01-31T22:02:36.567Z,W,578,599,S
-3,2024-02-01T20:01:12.567Z,W,406,400,F
+id,creation_date,working,initial_deposit,current_deposit,market
+1,2024-01-31T21:08:21.567Z,True,1035,1045,S
+2,2024-01-31T22:02:36.567Z,False,578,599,S
+3,2024-02-01T20:01:12.567Z,True,406,400,F

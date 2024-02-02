@@ -3,19 +3,14 @@ from django.db import models
 
 class Deal(models.Model):
     """Model for deals."""
-    STATUS_CHOICES = (
-        ('C', 'Closed'),
-        ('P', 'In progress'),
-    )
     id = models.AutoField(primary_key=True)
     opening_date = models.DateField(
         verbose_name='Trade opening date',
         auto_now_add=True,
     )
-    status = models.CharField(
+    closed = models.BooleanField(
         verbose_name='Status of deal',
-        max_length=20,
-        choices=STATUS_CHOICES,
+        default=False,
     )
     ticker = models.CharField(
         verbose_name='Coin ticker',
@@ -27,6 +22,7 @@ class Deal(models.Model):
     selling_price = models.FloatField(
         verbose_name='Trade exit price',
         blank=True,
+        null=True,
     )
     trader = models.ForeignKey(
         'Trader',
@@ -39,10 +35,6 @@ class Deal(models.Model):
 
 class Trader(models.Model):
     """Model for trading bots."""
-    STATUS_CHOICES = (
-        ('O', 'Off'),
-        ('W', 'In working'),
-    )
     MARKET_CHOICES = (
         ('S', 'Spot'),
         ('F', 'Futures'),
@@ -52,10 +44,9 @@ class Trader(models.Model):
         verbose_name='Trading bot creation date',
         auto_now_add=True,
     )
-    status = models.CharField(
+    working = models.BooleanField(
         verbose_name='Status of trading bot',
-        max_length=20,
-        choices=STATUS_CHOICES,
+        default=False,
     )
     initial_deposit = models.FloatField(
         verbose_name='Trading bot starting deposit',
@@ -63,13 +54,16 @@ class Trader(models.Model):
     current_deposit = models.FloatField(
         verbose_name='Trading bot current deposit',
         blank=True,
+        null=True,
     )
     """
     revenue = models.GeneratedField(
         verbose_name='Revenue for trader',
-        expression=(models.F('current_deposit') - models.F('initial_deposit')) * 100 / models.F('initial_deposit'),
+        expression=
+        (models.F('current_deposit') - models.F('initial_deposit')) * 100 /
+        models.F('initial_deposit'),
         db_persist=False,
-        output_field=models.FloatField(),
+        output_field=models.IntegerField(),
     )
     """
     market = models.CharField(
