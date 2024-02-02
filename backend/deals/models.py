@@ -24,6 +24,12 @@ class Deal(models.Model):
         blank=True,
         null=True,
     )
+    revenue = models.GeneratedField(
+        verbose_name='Revenue for deal',
+        expression=models.F('selling_price') - models.F('purchase_price'),
+        db_persist=False,
+        output_field=models.FloatField(),
+    )
     trader = models.ForeignKey(
         'Trader',
         verbose_name='Trader who made the deal',
@@ -56,18 +62,17 @@ class Trader(models.Model):
         blank=True,
         null=True,
     )
-    """
     revenue = models.GeneratedField(
-        verbose_name='Revenue for trader',
-        expression=
-        (models.F('current_deposit') - models.F('initial_deposit')) * 100 /
-        models.F('initial_deposit'),
+        verbose_name='Revenue for trading bot',
+        expression=models.F('current_deposit') - models.F('initial_deposit'),
         db_persist=False,
-        output_field=models.IntegerField(),
+        output_field=models.FloatField(),
     )
-    """
     market = models.CharField(
         verbose_name='The market where the bot trades',
         max_length=20,
         choices=MARKET_CHOICES,
     )
+
+    def __str__(self):
+        return self.id
