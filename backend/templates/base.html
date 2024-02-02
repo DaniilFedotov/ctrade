@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <title>{% block title %}Title{% endblock title %}</title>
   </head>
-  <body>
+  <body style="background-color: #ebf4e5">
     <header>
-      <nav class="navbar navbar-light" style="background-color: #65bb65">
+      <nav class="navbar navbar-light" style="background-color: #85bb65">
         <div class="container">
           {% with request.resolver_match.view_name as view_name %}
           <ul class="nav nav-pills">
