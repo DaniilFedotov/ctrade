@@ -4,10 +4,34 @@
 {% endblock title %}
 {% block content %}
   <div class="container py-5">
-    <h1>{{ Deals }}</h1>
-    <p> Deals </p>
-    {% for deal in deals %}
-
-    {% endfor %}
+    <h1>All deals.</h1>
+    <table width="100%">
+      <thead>
+        <tr>
+          <th style="text-align:center">Id</th>
+          <th style="text-align:center">Opening time</th>
+          <th style="text-align:center">Closed</th>
+          <th style="text-align:center">Ticker</th>
+          <th style="text-align:center">Purchase price, USD</th>
+          <th style="text-align:center">Selling price, USD</th>
+          <th style="text-align:center">Revenue</th>
+          <th style="text-align:center">Trader</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for deal in deals %}
+          <tr>
+            <td style="text-align:center">{{ deal.id }}</td>
+            <td style="text-align:center">{{ deal.opening_date }}</td>
+            <td style="text-align:center">{{ deal.closed }}</td>
+            <td style="text-align:center">{{ deal.ticker }}</td>
+            <td style="text-align:center">{{ deal.purchase_price }}</td>
+            <td style="text-align:center">{{ deal.selling_price }}</td>
+            <td style="text-align:center">{{ deal.revenue }}</td>
+            <td style="text-align:center">{{ deal.trader.id }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock content %}
