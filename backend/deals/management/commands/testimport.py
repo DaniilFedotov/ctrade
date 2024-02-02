@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 if options['delete_existing']:
                     model.objects.all().delete()
                     self.stdout.write(self.style.SUCCESS(
-                        'Предыдущие данные удалены.'))
+                        'Previous data deleted.'))
                 model.objects.bulk_create(records)
-                self.stdout.write(self.style.SUCCESS('Данные импортированы.'))
+                self.stdout.write(self.style.SUCCESS(f'Data from {file}.scv imported.'))
                 csvfile.close()
