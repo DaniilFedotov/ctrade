@@ -17,12 +17,22 @@ class Deal(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
     )
+    ticker = models.CharField(
+        verbose_name='Coin ticker',
+        max_length=20,
+    )
     purchase_price = models.FloatField(
         verbose_name='Trade entry price',
     )
     selling_price = models.FloatField(
         verbose_name='Trade exit price',
         blank=True,
+    )
+    trader = models.ForeignKey(
+        'Trader',
+        verbose_name='Trader who made the deal',
+        on_delete=models.SET_NULL,
+        related_name='deals',
     )
 
 
