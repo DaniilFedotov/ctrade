@@ -33,6 +33,7 @@ class Deal(models.Model):
         verbose_name='Trader who made the deal',
         on_delete=models.SET_NULL,
         related_name='deals',
+        null=True,
     )
 
 
@@ -63,6 +64,14 @@ class Trader(models.Model):
         verbose_name='Trading bot current deposit',
         blank=True,
     )
+    """
+    revenue = models.GeneratedField(
+        verbose_name='Revenue for trader',
+        expression=(models.F('current_deposit') - models.F('initial_deposit')) * 100 / models.F('initial_deposit'),
+        db_persist=False,
+        output_field=models.FloatField(),
+    )
+    """
     market = models.CharField(
         verbose_name='The market where the bot trades',
         max_length=20,

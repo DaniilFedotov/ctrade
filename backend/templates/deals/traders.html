@@ -5,9 +5,32 @@
 {% block content %}
   <div class="container py-5">
     <h1>{{ Traders }}</h1>
-    <p> Traders </p>
-    {% for trader in traders %}
-
-    {% endfor %}
+    <p> All trader's statistics.</p>
+    <table width="100%">
+      <thead>
+        <tr>
+          <th style="text-align:center">Id</th>
+          <th style="text-align:center">Date of creation</th>
+          <th style="text-align:center">Status</th>
+          <th style="text-align:center">Initial deposit, USD</th>
+          <th style="text-align:center">Current deposit, USD</th>
+          <!--<th style="text-align:center">Revenue, %</th>-->
+          <th style="text-align:center">Market</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for trader in traders %}
+          <tr>
+            <td style="text-align:center">{{ trader.id }}</td>
+            <td style="text-align:center">{{ trader.creation_date }}</td>
+            <td style="text-align:center">{{ trader.status }}</td>
+            <td style="text-align:center">{{ trader.initial_deposit }}</td>
+            <td style="text-align:center">{{ trader.current_deposit }}</td>
+            <!--<td style="text-align:center">{{ trader.revenue }}</td>-->
+            <td style="text-align:center">{{ trader.market }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock content %}
