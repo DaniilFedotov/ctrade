@@ -7,4 +7,5 @@ app_name = 'deals'
 urlpatterns = [
     path('deals/', views.deals, name='deal'),
     path('traders/', views.traders, name='trader'),
+    path('', views.home, name='home'),
 ]

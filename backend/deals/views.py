@@ -3,6 +3,13 @@ from django.shortcuts import render
 from .models import Deal, Trader
 
 
+def home(request):
+    context = {
+        'home': 'Home'
+    }
+    return render(request, 'deals/home.html', context)
+
+
 def deals(request):
     deals_objects = Deal.objects.all()
     context = {

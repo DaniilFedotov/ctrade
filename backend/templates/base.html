@@ -13,6 +13,13 @@
           {% with request.resolver_match.view_name as view_name %}
           <ul class="nav nav-pills">
             <li class="nav-item">
+              <a class="nav-link {% if view_name == 'deals:home' %}active{% endif %}"
+                 href="{% url 'deals:home' %}"
+              >
+                Home
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link {% if view_name == 'deals:deal' %}active{% endif %}"
                  href="{% url 'deals:deal' %}"
               >
