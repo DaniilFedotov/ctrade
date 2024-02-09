@@ -12,7 +12,7 @@ SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = str(os.getenv('ALLOWED_HOSTS')).split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,7 +63,7 @@ DATABASES = {
         'USER': os.getenv('POSTGRES_USER', 'django'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
         'HOST': os.getenv('DB_HOST', ''),
-        'POST': os.getenv('DB_PORT', 5432),
+        'PORT': os.getenv('DB_PORT', 5432),
     }
 }
 
