@@ -65,7 +65,7 @@ class Trader(models.Model):
     revenue = models.GeneratedField(
         verbose_name='Revenue for trading bot',
         expression=models.F('current_deposit') - models.F('initial_deposit'),
-        db_persist=True, # True для postgres
+        db_persist=True,  # True для postgres
         output_field=models.FloatField(),
     )
     market = models.CharField(

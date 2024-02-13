@@ -27,7 +27,7 @@ class Deal(models.Model):
     revenue = models.GeneratedField(
         verbose_name='Revenue for deal',
         expression=models.F('selling_price') - models.F('purchase_price'),
-        db_persist=False,
+        db_persist=True,  # True для postgres
         output_field=models.FloatField(),
     )
     trader = models.ForeignKey(
@@ -65,7 +65,7 @@ class Trader(models.Model):
     revenue = models.GeneratedField(
         verbose_name='Revenue for trading bot',
         expression=models.F('current_deposit') - models.F('initial_deposit'),
-        db_persist=False,
+        db_persist=True,  # True для postgres
         output_field=models.FloatField(),
     )
     market = models.CharField(
