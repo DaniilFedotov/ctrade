@@ -39,7 +39,7 @@ class Deal(models.Model):
     )
 
     class Meta:
-        ordering = ('-opening_date',)
+        ordering = ('-id',)
 
 
 class Trader(models.Model):
@@ -78,7 +78,7 @@ class Trader(models.Model):
     )
 
     class Meta:
-        ordering = ('-creation_date',)
+        ordering = ('-id',)
 
     def __str__(self):
         return self.id
