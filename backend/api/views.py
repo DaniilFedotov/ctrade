@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from rest_framework.viewsets import ModelViewSet
 
-from ..deals.models import Deal, Trader
+from deals.models import Deal, Trader
 from .serializers import DealSerializer, TraderSerializer
 
 

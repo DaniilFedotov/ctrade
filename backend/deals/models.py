@@ -38,6 +38,9 @@ class Deal(models.Model):
         null=True,
     )
 
+    class Meta:
+        ordering = ('-opening_date',)
+
 
 class Trader(models.Model):
     """Model for trading bots."""
@@ -73,6 +76,9 @@ class Trader(models.Model):
         max_length=20,
         choices=MARKET_CHOICES,
     )
+
+    class Meta:
+        ordering = ('-creation_date',)
 
     def __str__(self):
         return self.id
