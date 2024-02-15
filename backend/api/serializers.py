@@ -8,7 +8,8 @@ class DealSerializer(ModelSerializer):
     class Meta:
         model = Deal
         fields = ('id', 'opening_date', 'closed', 'ticker',
-                  'purchase_price', 'selling_price', 'trader',)
+                  'quantity', 'purchase_price', 'selling_price',
+                  'trader',)
         read_only_fields = ('id',)
 
 

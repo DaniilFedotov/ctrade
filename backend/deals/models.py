@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import DecimalValidator
 
 
 class Deal(models.Model):
@@ -19,8 +18,6 @@ class Deal(models.Model):
     )
     quantity = models.FloatField(
         verbose_name='Quantity purchased',
-        validators=(DecimalValidator(
-            decimal_places=6)),
     )
     purchase_price = models.FloatField(
         verbose_name='Trade entry price',
@@ -29,12 +26,13 @@ class Deal(models.Model):
         verbose_name='Trade exit price',
         blank=True,
         null=True,
+        default=None,
     )
-    revenue = models.GeneratedField(
+    revenue = models.FloatField(
         verbose_name='Revenue for deal',
-        expression=models.F('selling_price') - models.F('purchase_price'),
-        db_persist=True,  # True для postgres
-        output_field=models.FloatField(),
+        blank=True,
+        null=True,
+        default=None,
     )
     trader = models.ForeignKey(
         'Trader',
