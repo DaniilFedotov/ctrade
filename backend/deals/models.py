@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import DecimalValidator
 
 
 class Deal(models.Model):
@@ -15,6 +16,11 @@ class Deal(models.Model):
     ticker = models.CharField(
         verbose_name='Coin ticker',
         max_length=20,
+    )
+    quantity = models.FloatField(
+        verbose_name='Quantity purchased',
+        validators=(DecimalValidator(
+            decimal_places=6)),
     )
     purchase_price = models.FloatField(
         verbose_name='Trade entry price',
