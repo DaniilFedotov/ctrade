@@ -21,14 +21,14 @@
       <tbody>
         {% for deal in page_obj %}
           <tr>
-            <td style="text-align:center">{{ deal.id }}</td>
-            <td style="text-align:center">{{ deal.opening_date }}</td>
-            <td style="text-align:center">{{ deal.closed }}</td>
-            <td style="text-align:center">{{ deal.ticker }}</td>
-            <td style="text-align:center">{{ deal.purchase_price }}</td>
-            <td style="text-align:center">{{ deal.selling_price }}</td>
-            <td style="text-align:center">{{ deal.revenue }}</td>
-            <td style="text-align:center">{{ deal.trader.id }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ deal.id }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ deal.opening_date }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ deal.closed }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ deal.ticker }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ deal.purchase_price }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ deal.selling_price }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ deal.revenue }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ deal.trader.id }}</td>
           </tr>
         {% endfor %}
       </tbody>

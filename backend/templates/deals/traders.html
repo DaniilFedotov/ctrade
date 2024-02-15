@@ -20,13 +20,13 @@
       <tbody>
         {% for trader in page_obj %}
           <tr>
-            <td style="text-align:center">{{ trader.id }}</td>
-            <td style="text-align:center">{{ trader.creation_date }}</td>
-            <td style="text-align:center">{{ trader.working }}</td>
-            <td style="text-align:center">{{ trader.initial_deposit }}</td>
-            <td style="text-align:center">{{ trader.current_deposit }}</td>
-            <td style="text-align:center">{{ trader.revenue }}</td>
-            <td style="text-align:center">{{ trader.market }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ trader.id }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ trader.creation_date }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ trader.working }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ trader.initial_deposit }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ trader.current_deposit }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ trader.revenue }}</td>
+            <td style="text-align:center; border: 1px solid #c0c0c0">{{ trader.market }}</td>
           </tr>
         {% endfor %}
       </tbody>
