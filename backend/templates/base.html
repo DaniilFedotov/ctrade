@@ -15,21 +15,27 @@
             <li class="nav-item">
               <a class="nav-link {% if view_name == 'deals:home' %}active{% endif %}"
                  href="{% url 'deals:home' %}"
-                 style="{% if view_name == 'deals:home' %}background-color: #1c732b;{% endif %}color: #000000">
+                 style="{% if view_name == 'deals:home' %}
+                 background-color: #1c732b; border: 1px solid #c0c0c0;
+                 {% endif %}color: #000000">
                 Home
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link {% if view_name == 'deals:deal' %}active{% endif %}"
                  href="{% url 'deals:deal' %}"
-                 style="{% if view_name == 'deals:deal' %}background-color: #1c732b;{% endif %}color: #000000">
+                 style="{% if view_name == 'deals:deal' %}
+                 background-color: #1c732b; border: 1px solid #c0c0c0;
+                 {% endif %}color: #000000">
                 Deals
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link {% if view_name == 'deals:trader' %}active{% endif %}"
                  href="{% url 'deals:trader' %}"
-                 style="{% if view_name == 'deals:trader' %}background-color: #1c732b;{% endif %}color: #000000">
+                 style="{% if view_name == 'deals:trader' %}
+                 background-color: #1c732b; border: 1px solid #c0c0c0;
+                 {% endif %}color: #000000">
                 Trading bots
               </a>
             </li>
