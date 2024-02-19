@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 
 
@@ -17,17 +19,26 @@ def get_revenue(update, context):
         num_of_deals = 5
     deals = requests.get('http://localhost:8000/api/deals/')
     revenue = 0
-    for i in range(0, num_of_deals):
+    for i in range(num_of_deals):
         deal = deals.json()[i]
         if deal['closed']:
             revenue += deal['revenue']
     context.bot.send_message(
         chat_id=chat.id,
-        text=f'Revenue for the last {num_of_deals} trades: {revenue}.')
+        text=f'Revenue for the last {num_of_deals} trades: {revenue} USD.')
 
 
-def get_daily_profit(update, context):
+def get_daily_revenue(update, context):
     chat = update.effective_chat
-    print(f'update: {update}')
-    print(f'context: {context}')
-    context.bot.send_message(chat_id=chat.id, text='Some daily profit.')
+    deals = requests.get('http://localhost:8000/api/deals/')
+    today = datetime.datetime.now().strftime('%Y-%m-%d')
+    revenue = 0
+    for deal in deals.json():
+        if deal['opening_date'] == today:
+            if deal['closed']:
+                revenue += deal['revenue']
+        else:
+            break
+    context.bot.send_message(
+        chat_id=chat.id,
+        text=f'Revenue for today: {revenue} USD.')
