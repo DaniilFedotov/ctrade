@@ -4,7 +4,7 @@ from telegram import Bot
 from telegram.ext import Updater, Filters, MessageHandler, CommandHandler
 from dotenv import load_dotenv
 
-from commands import stop_trading, get_profit, get_daily_profit
+from commands import stop_trading, get_revenue, get_daily_profit
 
 
 load_dotenv()
@@ -28,10 +28,10 @@ def get_help(update, context):
 
 def main():
     updater.dispatcher.add_handler(CommandHandler('stop', stop_trading))
-    updater.dispatcher.add_handler(CommandHandler('profit', get_profit))
+    updater.dispatcher.add_handler(CommandHandler('revenue', get_revenue))
     updater.dispatcher.add_handler(CommandHandler('daily', get_daily_profit))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, get_help))
-    updater.start_polling(poll_interval=20.0)
+    updater.start_polling(poll_interval=1.0)
     updater.idle()
 
 
