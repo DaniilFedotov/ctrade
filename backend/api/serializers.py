@@ -19,6 +19,7 @@ class DealSerializer(ModelSerializer):
         instance.selling_price = selling_price
         revenue = round(quantity * (selling_price - purchase_price), 2)
         instance.revenue = revenue
+        instance.closed = True
         instance.save()
         return instance
 
