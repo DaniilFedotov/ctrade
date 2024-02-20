@@ -13,7 +13,7 @@ TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
 HELP_TEXT = (f'Bot is running. You can use the following commands:\n'
-             f'/stop - stopping current trading;\n'
+             f'/stop x - stop trading bot with id x;\n'
              f'/revenue x - get revenue for the last x trades (default - 5);\n'
              f'/daily - get revenue for today;\n')
 
