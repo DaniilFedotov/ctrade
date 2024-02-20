@@ -3,8 +3,38 @@ import datetime
 import requests
 
 
+def start_trading(update, context):
+    """Launches the specified bot."""
+    chat = update.effective_chat
+    command = update['message']['text'].split(' ')
+    if len(command) == 2:
+        bot_id = int(command[1])
+        trader = requests.get(
+            f'http://localhost:8000/api/traders/{bot_id}/')
+        if trader.json()['working']:
+            context.bot.send_message(
+                chat_id=chat.id,
+                text=f'This bot is already running.')
+        else:
+            response = requests.patch(
+                f'http://localhost:8000/api/traders/{bot_id}/',
+                data={'working': True})
+            if response.status_code == 200:
+                context.bot.send_message(
+                    chat_id=chat.id,
+                    text=f'The bot {bot_id} is running.')
+            else:
+                context.bot.send_message(
+                    chat_id=chat.id,
+                    text=f'Unexpected error.')
+    else:
+        context.bot.send_message(
+            chat_id=chat.id,
+            text=f'Bot number not specified.')
+
+
 def stop_trading(update, context):
-    """Stops a specific bot."""
+    """Stops the specified bot."""
     chat = update.effective_chat
     command = update['message']['text'].split(' ')
     if len(command) == 2:
