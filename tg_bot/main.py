@@ -14,7 +14,7 @@ TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
 HELP_TEXT = (f'Bot is running. You can use the following commands:\n'
              f'/stop - stopping current trading;\n'
-             f'/revenue x - get revenue for the last x trades;\n'
+             f'/revenue x - get revenue for the last x trades (default - 5);\n'
              f'/daily - get revenue for today;\n')
 
 bot = Bot(token=TELEGRAM_TOKEN)
@@ -22,11 +22,13 @@ updater = Updater(token=TELEGRAM_TOKEN)
 
 
 def get_help(update, context):
+    """Gives information about available commands."""
     chat = update.effective_chat
     context.bot.send_message(chat_id=chat.id, text=HELP_TEXT)
 
 
 def main():
+    """Distributes received commands."""
     updater.dispatcher.add_handler(CommandHandler('stop', stop_trading))
     updater.dispatcher.add_handler(CommandHandler('revenue', get_revenue))
     updater.dispatcher.add_handler(CommandHandler('daily', get_daily_revenue))

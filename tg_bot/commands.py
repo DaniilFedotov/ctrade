@@ -4,6 +4,7 @@ import requests
 
 
 def stop_trading(update, context):
+    """Stops a specific bot."""
     chat = update.effective_chat
     print(f'update: {update}')
     print(f'context: {context}')
@@ -11,6 +12,7 @@ def stop_trading(update, context):
 
 
 def get_revenue(update, context):
+    """Calculates revenue for recent transactions."""
     chat = update.effective_chat
     command = update['message']['text'].split(' ')
     if len(command) == 2:
@@ -29,6 +31,7 @@ def get_revenue(update, context):
 
 
 def get_daily_revenue(update, context):
+    """Calculates revenue for today's transactions."""
     chat = update.effective_chat
     deals = requests.get('http://localhost:8000/api/deals/')
     today = datetime.datetime.now().strftime('%Y-%m-%d')
