@@ -2,12 +2,14 @@ import time
 import requests
 
 from core import classes
+from strategy import grid_trading
 
 
 SLEEPTIME_SEC = 60
 
 
 def check_activity():
+    """Checks the status of trading bots."""
     traders = requests.get('http://localhost:8000/api/traders/').json()
     for trader in traders:
         if trader['working']:
@@ -21,10 +23,11 @@ def check_activity():
 
 
 def main():
+    """Bot launch wait function."""
     while True:
-        is_active = check_activity()
-        if is_active is not None:
-            pass
+        bot = check_activity()
+        if bot is not None:
+            grid_trading.trading(bot)
         time.sleep(SLEEPTIME_SEC)
 
 
