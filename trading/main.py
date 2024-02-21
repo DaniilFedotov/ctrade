@@ -2,7 +2,7 @@ import time
 import requests
 
 from core import classes
-from strategy import grid_trading
+from strategy.grid_trading import grid_trading
 
 
 SLEEPTIME_SEC = 60
