@@ -29,5 +29,6 @@ class TraderSerializer(ModelSerializer):
     class Meta:
         model = Trader
         fields = ('id', 'creation_date', 'working', 'initial_deposit',
-                  'current_deposit', 'revenue', 'market',)
+                  'current_deposit', 'revenue', 'market', 'token',
+                  'currency', 'exchange',)
         read_only_fields = ('id',)

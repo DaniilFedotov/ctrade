@@ -79,6 +79,19 @@ class Trader(models.Model):
         verbose_name='The market where the bot trades',
         max_length=20,
         choices=MARKET_CHOICES,
+        default='S',
+    )
+    token = models.CharField(
+        verbose_name='Name of the coin being traded.',
+        max_length=5,
+    )
+    currency = models.CharField(
+        verbose_name='Stablecoin of the traded pair.',
+        max_length=5,
+    )
+    exchange = models.CharField(
+        verbose_name='Exchange for trading.',
+        max_length=20,
     )
 
     class Meta:
