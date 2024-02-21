@@ -2,12 +2,11 @@ from exchange import binance, bybit
 
 
 class InitialTrader:
-    def __init__(self, trader_id, token, currency, client, exchange):
+    def __init__(self, trader_id, token, currency, exchange):
         self.trader_id = trader_id
         self.token = token
         self.currency = currency
         self.pair = token + currency
-        self.client = client
         self.exchange = exchange
 
     def check_price(self):
