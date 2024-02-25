@@ -83,11 +83,11 @@ class Trader(models.Model):
     )
     token = models.CharField(
         verbose_name='Name of the coin being traded.',
-        max_length=5,
+        max_length=7,
     )
     currency = models.CharField(
         verbose_name='Stablecoin of the traded pair.',
-        max_length=5,
+        max_length=7,
     )
     exchange = models.CharField(
         verbose_name='Exchange for trading.',
