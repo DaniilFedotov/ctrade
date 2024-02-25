@@ -1,9 +1,12 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Deal(models.Model):
     """Model for deals."""
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(
+        primary_key=True,
+    )
     opening_date = models.DateField(
         verbose_name='Trade opening date',
         auto_now_add=True,
@@ -52,7 +55,9 @@ class Trader(models.Model):
         ('S', 'Spot'),
         ('F', 'Futures'),
     )
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(
+        primary_key=True,
+    )
     creation_date = models.DateField(
         verbose_name='Trading bot creation date',
         auto_now_add=True,
@@ -99,3 +104,29 @@ class Trader(models.Model):
 
     def __str__(self):
         return self.id
+
+
+class Grid(models.Model):
+    """Model for grid description."""
+    id = models.AutoField(
+        primary_key=True,
+    )
+    top = models.FloatField(
+        verbose_name='Grid top border.'
+    )
+    bottom = models.FloatField(
+        verbose_name='Grid bottom border.'
+    )
+    number_of_levels = models.PositiveIntegerField(
+        verbose_name='Number of grid levels.',
+        validators=[
+            MaxValueValidator(20),
+            MinValueValidator(6),]
+    )
+    deposit = models.FloatField(
+        verbose_name='Deposit for strategy.'
+    )
+    token = models.ForeignKey(
+    )
+    currency = models.ForeignKey(
+    )
