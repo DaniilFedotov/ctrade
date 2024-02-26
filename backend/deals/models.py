@@ -171,11 +171,11 @@ class TradingPair(models.Model):
         verbose_name='Linked model for a currency.',
         on_delete=models.CASCADE,
     )
-    price_precision = models.FloatField(
-        verbose_name='Price precision for a trading pair.'
+    price_precision = models.IntegerField(
+        verbose_name='Price precision for a trading pair in decimal places.'
     )
-    quantity_precision = models.FloatField(
-        verbose_name='Quantity precision for a trading pair.'
+    quantity_precision = models.IntegerField(
+        verbose_name='Quantity precision for a trading pair in decimal places.'
     )
 
     class Meta:
