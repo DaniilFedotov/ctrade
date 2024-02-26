@@ -16,9 +16,10 @@ class Deal(models.Model):
         default=False,
     )
     ticker = models.ForeignKey(
-        'Token',
-        verbose_name='Coin ticker',
-        on_delete=models.CASCADE,
+        'TradingPair',
+        verbose_name='Ticker of the coin being traded.',
+        on_delete=models.SET_NULL,
+        null=True,
     )
     quantity = models.FloatField(
         verbose_name='Quantity purchased',
@@ -87,17 +88,11 @@ class Trader(models.Model):
         choices=MARKET_CHOICES,
         default='S',
     )
-    token = models.ForeignKey(
-        'Token',
-        verbose_name='Name of the coin being traded.',
-        on_delete=models.CASCADE,
-        related_name='traders',
-    )
-    currency = models.ForeignKey(
-        'Currency',
-        verbose_name='Stablecoin of the traded pair.',
-        on_delete=models.CASCADE,
-        related_name='traders',
+    ticker = models.ForeignKey(
+        'TradingPair',
+        verbose_name='Ticker of the coin being traded.',
+        on_delete=models.SET_NULL,
+        null=True,
     )
     exchange = models.CharField(
         verbose_name='Exchange for trading.',
@@ -131,17 +126,10 @@ class Grid(models.Model):
     deposit = models.FloatField(
         verbose_name='Deposit for strategy.'
     )
-    token = models.ForeignKey(
-        'Token',
-        verbose_name='Name of the coin being traded.',
+    ticker = models.ForeignKey(
+        'TradingPair',
+        verbose_name='Ticker of the coin being traded.',
         on_delete=models.CASCADE,
-        related_name='grids',
-    )
-    currency = models.ForeignKey(
-        'Currency',
-        verbose_name='Stablecoin of the traded pair.',
-        on_delete=models.CASCADE,
-        related_name='grids',
     )
 
 
@@ -171,7 +159,7 @@ class Currency(models.Model):
         return self.name
 
 
-class TokenCurrency(models.Model):
+class TradingPair(models.Model):
     """Model for are trading pair."""
     token = models.ForeignKey(
         'Token',
@@ -191,4 +179,7 @@ class TokenCurrency(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['token', 'currency'],
-                name='tokencurrency_unique')]
+                name='tradingpair_unique')]
+
+    def __str__(self):
+        return self.token.name + self.currency.name
