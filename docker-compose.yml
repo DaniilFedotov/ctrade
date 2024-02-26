@@ -12,12 +12,22 @@ services:
       - pg_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U django_user"]
 
   backend:
     container_name: backend
     image: daniilfedotov/ctrade_backend
     env_file: ./backend/.env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8000:8000"
+
+  tg_bot:
+    container_name: tg_bot
+    image: daniilfedotov/ctrade_tg_bot
+    env_file: ./tg_bot/.env
+    depends_on:
+      - backend
