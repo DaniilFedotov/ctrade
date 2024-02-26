@@ -86,13 +86,17 @@ class Trader(models.Model):
         choices=MARKET_CHOICES,
         default='S',
     )
-    token = models.CharField(
+    token = models.ForeignKey(
+        'Token',
         verbose_name='Name of the coin being traded.',
-        max_length=7,
+        on_delete=models.SET_NULL,
+        related_name='traders',
     )
-    currency = models.CharField(
+    currency = models.ForeignKey(
+        'Currency',
         verbose_name='Stablecoin of the traded pair.',
-        max_length=7,
+        on_delete=models.SET_NULL,
+        related_name='traders',
     )
     exchange = models.CharField(
         verbose_name='Exchange for trading.',
@@ -127,6 +131,34 @@ class Grid(models.Model):
         verbose_name='Deposit for strategy.'
     )
     token = models.ForeignKey(
+        'Token',
+        verbose_name='Name of the coin being traded.',
+        on_delete=models.SET_NULL,
+        related_name='grids',
     )
     currency = models.ForeignKey(
+        'Currency',
+        verbose_name='Stablecoin of the traded pair.',
+        on_delete=models.SET_NULL,
+        related_name='grids',
+    )
+
+
+class Token(models.Model):
+    """Model for token."""
+    id = models.AutoField(
+        primary_key=True,
+    )
+    name = models.CharField(
+        max_length=10,
+    )
+
+
+class Currency(models.Model):
+    """Model for a currency such as stablecoin."""
+    id = models.AutoField(
+        primary_key=True,
+    )
+    name = models.CharField(
+        max_length=10,
     )
