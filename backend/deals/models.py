@@ -153,6 +153,9 @@ class Token(models.Model):
         max_length=10,
     )
 
+    def __str__(self):
+        return self.name
+
 
 class Currency(models.Model):
     """Model for a currency such as stablecoin."""
@@ -162,6 +165,9 @@ class Currency(models.Model):
     name = models.CharField(
         max_length=10,
     )
+
+    def __str__(self):
+        return self.name
 
 
 class TokenCurrency(models.Model):
