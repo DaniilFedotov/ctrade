@@ -15,9 +15,10 @@ class Deal(models.Model):
         verbose_name='Status of deal',
         default=False,
     )
-    ticker = models.CharField(
+    ticker = models.ForeignKey(
+        'Token',
         verbose_name='Coin ticker',
-        max_length=20,
+        on_delete=models.CASCADE,
     )
     quantity = models.FloatField(
         verbose_name='Quantity purchased',
@@ -89,13 +90,13 @@ class Trader(models.Model):
     token = models.ForeignKey(
         'Token',
         verbose_name='Name of the coin being traded.',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='traders',
     )
     currency = models.ForeignKey(
         'Currency',
         verbose_name='Stablecoin of the traded pair.',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='traders',
     )
     exchange = models.CharField(
@@ -133,13 +134,13 @@ class Grid(models.Model):
     token = models.ForeignKey(
         'Token',
         verbose_name='Name of the coin being traded.',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='grids',
     )
     currency = models.ForeignKey(
         'Currency',
         verbose_name='Stablecoin of the traded pair.',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='grids',
     )
 
