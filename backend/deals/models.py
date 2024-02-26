@@ -162,3 +162,26 @@ class Currency(models.Model):
     name = models.CharField(
         max_length=10,
     )
+
+
+class TokenCurrency(models.Model):
+    """Model for are trading pair."""
+    token = models.ForeignKey(
+        'Token',
+        verbose_name='Linked model for a token.',
+        on_delete=models.CASCADE,
+    )
+    currency = models.ForeignKey(
+        'Currency',
+        verbose_name='Linked model for a currency.',
+        on_delete=models.CASCADE,
+    )
+    precision = models.FloatField(
+        verbose_name='Price precision for a trading pair.'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['token', 'currency'],
+                name='tokencurrency_unique')]
