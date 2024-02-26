@@ -161,6 +161,9 @@ class Currency(models.Model):
 
 class TradingPair(models.Model):
     """Model for are trading pair."""
+    id = models.AutoField(
+        primary_key=True,
+    )
     token = models.ForeignKey(
         'Token',
         verbose_name='Linked model for a token.',
