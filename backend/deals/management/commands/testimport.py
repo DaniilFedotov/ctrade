@@ -2,13 +2,15 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-from deals.models import Deal, Trader, Token, Currency, TradingPair
+from deals.models import (Deal, Trader, Grid,
+                          Token, Currency, TradingPair)
 
 PATH = 'static/data/'
 FILES__MODELS = {
     'tokens': Token,
     'currencies': Currency,
     'tradingpairs': TradingPair,
+    'grids': Grid,
     'traders': Trader,
     'deals': Deal,
 }
