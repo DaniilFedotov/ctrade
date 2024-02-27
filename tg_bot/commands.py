@@ -2,12 +2,6 @@ import os
 import datetime
 
 import requests
-from dotenv import load_dotenv
-
-
-load_dotenv()
-
-HOST_IP = os.getenv('HOST_IP')
 
 
 def start_trading(update, context):
@@ -16,14 +10,14 @@ def start_trading(update, context):
     if len(command) == 2:
         bot_id = int(command[1])
         trader = requests.get(
-            f'http://{HOST_IP}:8000/api/traders/{bot_id}/')
+            f'http://backend:8000/api/traders/{bot_id}/')
         if trader.json()['working']:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text=f'This bot is already running.')
         else:
             response = requests.patch(
-                f'http://{HOST_IP}:8000/api/traders/{bot_id}/',
+                f'http://backend:8000/api/traders/{bot_id}/',
                 data={'working': True})
             if response.status_code == 200:
                 context.bot.send_message(
@@ -45,10 +39,10 @@ def stop_trading(update, context):
     if len(command) == 2:
         bot_id = int(command[1])
         trader = requests.get(
-            f'http://{HOST_IP}:8000/api/traders/{bot_id}/')
+            f'http://backend:8000/api/traders/{bot_id}/')
         if trader.json()['working']:
             response = requests.patch(
-                f'http://{HOST_IP}:8000/api/traders/{bot_id}/',
+                f'http://backend:8000/api/traders/{bot_id}/',
                 data={'working': False})
             if response.status_code == 200:
                 context.bot.send_message(
@@ -75,7 +69,7 @@ def get_revenue(update, context):
         num_of_deals = int(command[1])
     else:
         num_of_deals = 5
-    deals = requests.get(f'http://{HOST_IP}:8000/api/deals/')
+    deals = requests.get('http://backend:8000/api/deals/')
     revenue = 0
     for i in range(num_of_deals):
         deal = deals.json()[i]
@@ -88,7 +82,7 @@ def get_revenue(update, context):
 
 def get_daily_revenue(update, context):
     """Calculates revenue for today's transactions."""
-    deals = requests.get(f'http://{HOST_IP}:8000/api/deals/')
+    deals = requests.get('http://backend:8000/api/deals/')
     today = datetime.datetime.now().strftime('%Y-%m-%d')
     revenue = 0
     for deal in deals.json():
@@ -104,7 +98,7 @@ def get_daily_revenue(update, context):
 
 def get_bot_id(update, context):
     """Give the id of a running trading bot."""
-    traders = requests.get(f'http://{HOST_IP}:8000/api/traders/')
+    traders = requests.get('http://backend:8000/api/traders/')
     bot_id = None
     for trader in traders.json():
         if trader['working']:
