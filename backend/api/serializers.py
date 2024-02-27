@@ -1,6 +1,12 @@
 from rest_framework.serializers import ModelSerializer
 
-from deals.models import Deal, Trader, TradingPair
+from deals.models import Deal, Trader, Token, Currency, TradingPair
+
+
+class TokenSerializer(ModelSerializer):
+    class Meta:
+        model = Token
+        fields = ('id', 'name',)
 
 
 class TickerSerializer(ModelSerializer):
