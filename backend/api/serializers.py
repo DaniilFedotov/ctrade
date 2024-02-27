@@ -4,18 +4,24 @@ from deals.models import Deal, Trader, Token, Currency, TradingPair
 
 
 class TokenSerializer(ModelSerializer):
+    """Serializer for the token model."""
     class Meta:
         model = Token
         fields = ('id', 'name',)
 
 
 class CurrencySerializer(ModelSerializer):
+    """Serializer for the currency model."""
     class Meta:
         model = Token
         fields = ('id', 'name',)
 
 
 class TickerSerializer(ModelSerializer):
+    """Serializer for the trading pair model."""
+    token = TokenSerializer()
+    currency = CurrencySerializer()
+
     class Meta:
         model = TradingPair
         fields = ('id', 'token', 'currency',
