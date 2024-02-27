@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 
-from deals.models import Deal, Trader, Token, Currency, TradingPair
+from deals.models import (Deal, Trader, Token, Currency,
+                          Grid, TradingPair)
 
 
 class TokenSerializer(ModelSerializer):
@@ -59,3 +60,13 @@ class TraderSerializer(ModelSerializer):
                   'current_deposit', 'revenue', 'market', 'ticker',
                   'exchange',)
         read_only_fields = ('id',)
+
+
+class GridSerializer(ModelSerializer):
+    """Serializer for the grid model."""
+    ticker = TickerSerializer()
+
+    class Meta:
+        model = Grid
+        fields = ('id', 'top', 'bottom', 'number_of_levels',
+                  'deposit', 'ticker',)
