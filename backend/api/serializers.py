@@ -9,6 +9,12 @@ class TokenSerializer(ModelSerializer):
         fields = ('id', 'name',)
 
 
+class CurrencySerializer(ModelSerializer):
+    class Meta:
+        model = Token
+        fields = ('id', 'name',)
+
+
 class TickerSerializer(ModelSerializer):
     class Meta:
         model = TradingPair
