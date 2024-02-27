@@ -29,6 +29,16 @@ class TickerSerializer(ModelSerializer):
                   'price_precision', 'quantity_precision',)
 
 
+class GridSerializer(ModelSerializer):
+    """Serializer for the grid model."""
+    ticker = TickerSerializer()
+
+    class Meta:
+        model = Grid
+        fields = ('id', 'top', 'bottom', 'number_of_levels',
+                  'deposit', 'ticker',)
+
+
 class DealSerializer(ModelSerializer):
     """Serializer for the deal model."""
     ticker = TickerSerializer()
@@ -54,19 +64,11 @@ class DealSerializer(ModelSerializer):
 
 class TraderSerializer(ModelSerializer):
     """Serializer for the trader model."""
+    grid = GridSerializer()
+
     class Meta:
         model = Trader
         fields = ('id', 'creation_date', 'working', 'initial_deposit',
                   'current_deposit', 'revenue', 'market', 'ticker',
-                  'exchange',)
+                  'exchange', 'grid',)
         read_only_fields = ('id',)
-
-
-class GridSerializer(ModelSerializer):
-    """Serializer for the grid model."""
-    ticker = TickerSerializer()
-
-    class Meta:
-        model = Grid
-        fields = ('id', 'top', 'bottom', 'number_of_levels',
-                  'deposit', 'ticker',)
