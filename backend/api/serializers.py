@@ -1,10 +1,19 @@
 from rest_framework.serializers import ModelSerializer
 
-from deals.models import Deal, Trader
+from deals.models import Deal, Trader, TradingPair
+
+
+class TickerSerializer(ModelSerializer):
+    class Meta:
+        model = TradingPair
+        fields = ('id', 'token', 'currency',
+                  'price_precision', 'quantity_precision',)
 
 
 class DealSerializer(ModelSerializer):
     """Serializer for the deal model."""
+    ticker = TickerSerializer()
+
     class Meta:
         model = Deal
         fields = ('id', 'opening_date', 'closed', 'ticker',
