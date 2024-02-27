@@ -98,6 +98,11 @@ class Trader(models.Model):
         verbose_name='Exchange for trading.',
         max_length=20,
     )
+    grid = models.ForeignKey(
+        'Grid',
+        verbose_name='Grid settings for trading.',
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         ordering = ('-id',)
