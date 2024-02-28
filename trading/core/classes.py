@@ -1,13 +1,16 @@
+from decimal import Decimal, ROUND_FLOOR
+
 from exchange import binance, bybit
 
 
 class InitialTrader:
-    def __init__(self, trader_id, token, currency, exchange):
+    def __init__(self, trader_id, exchange, grid):
         self.trader_id = trader_id
-        self.token = token
-        self.currency = currency
-        self.pair = token + currency
         self.exchange = exchange
+        self.grid_settings = grid
+        self.token = grid['ticker']['token']['name']
+        self.currency = grid['ticker']['currency']['name']
+        self.ticker = self.token + self.currency
 
     def check_price(self):
         """Checks the price of a coin."""
@@ -40,3 +43,14 @@ class InitialTrader:
                 return binance.sell_coin()
             case 'bybit':
                 return bybit.sell_coin()
+
+    def value_formatting(self, value, parameter):
+        decimal_number = Decimal(str(value))
+        if parameter == 'price':
+            accuracy = '1.' + self.grid_settings['ticker']['price_precision'] * '0'
+        elif parameter == 'quantity':
+            accuracy = '1.' + self.grid_settings['ticker']['quantity_precision'] * '0'
+        else:
+            accuracy = '1.0'
+        return float(decimal_number.quantize(
+            Decimal(accuracy), ROUND_FLOOR))

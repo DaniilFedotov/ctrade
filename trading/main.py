@@ -10,14 +10,13 @@ SLEEPTIME_SEC = 60
 
 def check_activity():
     """Checks the status of trading bots."""
-    traders = requests.get('http://localhost:8000/api/traders/').json()
+    traders = requests.get('http://backend:8000/api/traders/').json()
     for trader in traders:
         if trader['working']:
             trading_bot = classes.InitialTrader(
                 trader_id=trader['id'],
-                token=trader['token'],
-                currency=trader['currency'],
-                exchange=trader['exchange'])
+                exchange=trader['exchange'],
+                grid=trader['grid'])
             return trading_bot
     return None
 
