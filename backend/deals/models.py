@@ -88,12 +88,6 @@ class Trader(models.Model):
         choices=MARKET_CHOICES,
         default='S',
     )
-    ticker = models.ForeignKey(
-        'TradingPair',
-        verbose_name='Ticker of the coin being traded.',
-        on_delete=models.SET_NULL,
-        null=True,
-    )
     exchange = models.CharField(
         verbose_name='Exchange for trading.',
         max_length=20,
