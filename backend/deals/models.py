@@ -119,7 +119,7 @@ class Grid(models.Model):
     number_of_levels = models.PositiveIntegerField(
         verbose_name='Number of grid levels.',
         validators=[
-            MaxValueValidator(20),
+            MaxValueValidator(40),
             MinValueValidator(6),]
     )
     deposit = models.FloatField(
@@ -128,6 +128,48 @@ class Grid(models.Model):
     ticker = models.ForeignKey(
         'TradingPair',
         verbose_name='Ticker of the coin being traded.',
+        on_delete=models.CASCADE,
+    )
+    installed = models.BooleanField(
+        verbose_name='Status of grid.',
+        default=False,
+    )
+    step = models.FloatField(
+        verbose_name='Grid step.',
+        default=None,
+    )
+
+
+class Level(models.Model):
+    """Model for a level array."""
+    SIDE_CHOICES = (
+        ('buy', 'Buy order'),
+        ('sell', 'Sell order'),
+    )
+    id = models.AutoField(
+        primary_key=True,
+    )
+    side = models.CharField(
+        verbose_name='Order type.',
+        max_length=4,
+        choices=SIDE_CHOICES,
+    )
+    order_id = models.IntegerField(
+        verbose_name='Exchange order id.',
+    )
+    price = models.FloatField(
+        verbose_name='Order price.'
+    )
+    quantity = models.FloatField(
+        verbose_name='Number of coins in the order.'
+    )
+    inverse = models.BooleanField(
+        verbose_name='Indicates an order that goes beyond the original grid.',
+        default=False,
+    )
+    grid = models.ForeignKey(
+        'Grid',
+        verbose_name='Grid-parent.',
         on_delete=models.CASCADE,
     )
 
