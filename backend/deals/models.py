@@ -171,6 +171,7 @@ class Level(models.Model):
         'Grid',
         verbose_name='Grid-parent.',
         on_delete=models.CASCADE,
+        related_name='levels'
     )
 
 
