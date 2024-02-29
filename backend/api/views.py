@@ -2,8 +2,9 @@ from django.shortcuts import render
 
 from rest_framework.viewsets import ModelViewSet
 
-from deals.models import Deal, Trader
-from .serializers import DealSerializer, TraderSerializer
+from deals.models import Deal, Trader, Grid
+from .serializers import (DealSerializer, TraderSerializer,
+                          GridSerializer)
 
 
 class DealViewSet(ModelViewSet):
@@ -17,3 +18,8 @@ class TraderViewSet(ModelViewSet):
     queryset = Trader.objects.all()
     serializer_class = TraderSerializer
 
+
+class GridViewSet(ModelViewSet):
+    """Viewset for the grid model."""
+    queryset = Grid.objects.all()
+    serializer_class = GridSerializer
