@@ -136,6 +136,8 @@ class Grid(models.Model):
     )
     step = models.FloatField(
         verbose_name='Grid step.',
+        blank=True,
+        null=True,
         default=None,
     )
 
