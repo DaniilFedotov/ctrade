@@ -1,7 +1,7 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from deals.models import (Deal, Trader, Token, Currency,
-                          Grid, TradingPair)
+from deals.models import (Deal, Trader, Grid, Level,
+                          Token, Currency, TradingPair)
 
 
 class TokenSerializer(ModelSerializer):
@@ -29,14 +29,35 @@ class TickerSerializer(ModelSerializer):
                   'price_precision', 'quantity_precision',)
 
 
+class LevelSerializer(ModelSerializer):
+    """Serializer for the level model."""
+    class Meta:
+        model = Level
+        field = ('id', 'side', 'order_id', 'price',
+                 'quantity', 'inverse', 'grid',)
+
+
 class GridSerializer(ModelSerializer):
     """Serializer for the grid model."""
     ticker = TickerSerializer()
+    levels = SerializerMethodField()
 
     class Meta:
         model = Grid
         fields = ('id', 'top', 'bottom', 'number_of_levels',
-                  'deposit', 'ticker',)
+                  'deposit', 'ticker', 'installed', 'step', 'levels',)
+
+    def get_levels(self, obj):
+        grid = obj
+        levels = grid.levels.values(
+            'id',
+            'side',
+            'order_id',
+            'price',
+            'quantity',
+            'inverse',
+            'grid',)
+        return levels
 
 
 class DealSerializer(ModelSerializer):
