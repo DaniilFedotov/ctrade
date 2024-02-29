@@ -1,4 +1,6 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import (ModelSerializer,
+                                        SerializerMethodField,
+                                        PrimaryKeyRelatedField)
 
 from deals.models import (Deal, Trader, Grid, Level,
                           Token, Currency, TradingPair)
@@ -31,10 +33,12 @@ class TickerSerializer(ModelSerializer):
 
 class LevelSerializer(ModelSerializer):
     """Serializer for the level model."""
+    grid = PrimaryKeyRelatedField(queryset=Grid.objects.all())
+
     class Meta:
         model = Level
-        field = ('id', 'side', 'order_id', 'price',
-                 'quantity', 'inverse', 'grid',)
+        fields = ('id', 'side', 'order_id', 'price',
+                  'quantity', 'inverse', 'grid',)
 
 
 class GridSerializer(ModelSerializer):
