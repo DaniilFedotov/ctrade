@@ -28,21 +28,15 @@ class InitialTrader:
             case 'bybit':
                 return bybit.get_balance()
 
-    def buy_order(self):
-        """Places an order to buy a coin."""
+    def make_limit_order(self, side):
+        """Places an order to buy or sell a coin."""
         match self.exchange:
             case 'binance':
-                return binance.buy_coin()
+                return (binance.buy_coin() if side == 'buy'
+                        else binance.sell_coin())
             case 'bybit':
-                return bybit.buy_coin()
-
-    def sell_order(self):
-        """Places an order to sell a coin."""
-        match self.exchange:
-            case 'binance':
-                return binance.sell_coin()
-            case 'bybit':
-                return bybit.sell_coin()
+                return (bybit.buy_coin() if side == 'buy'
+                        else bybit.sell_coin())
 
     def value_formatting(self, value, parameter):
         decimal_number = Decimal(str(value))
