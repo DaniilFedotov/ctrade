@@ -140,6 +140,12 @@ class Grid(models.Model):
         null=True,
         default=None,
     )
+    order_size = models.FloatField(
+        verbose_name='Amount of currency per order.',
+        blank=True,
+        null=True,
+        default=None,
+    )
 
 
 class Level(models.Model):
