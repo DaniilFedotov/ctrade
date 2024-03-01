@@ -28,7 +28,7 @@ class InitialTrader:
             case 'bybit':
                 return bybit.get_balance()
 
-    def buy_coin(self):
+    def buy_order(self):
         """Places an order to buy a coin."""
         match self.exchange:
             case 'binance':
@@ -36,7 +36,7 @@ class InitialTrader:
             case 'bybit':
                 return bybit.buy_coin()
 
-    def sell_coin(self):
+    def sell_order(self):
         """Places an order to sell a coin."""
         match self.exchange:
             case 'binance':
