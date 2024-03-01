@@ -37,3 +37,11 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+  trading:
+    container_name: trading
+    image: daniilfedotov/ctrade_trading
+    env_file: ./trading/.env
+    depends_on:
+      - backend
+    restart: unless-stopped
