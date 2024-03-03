@@ -6,9 +6,9 @@ def check_price():
     pass
 
 
-def buy_coin():
+def buy_coin(quantity, price):
     pass
 
 
-def sell_coin():
+def sell_coin(quantity, price):
     pass
