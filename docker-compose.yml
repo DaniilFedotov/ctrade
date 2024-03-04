@@ -19,7 +19,7 @@ services:
   backend:
     container_name: backend
     image: daniilfedotov/ctrade_backend
-    env_file: ./backend/.env
+    env_file: .env
     depends_on:
       db:
         condition: service_healthy
@@ -33,7 +33,7 @@ services:
   tg_bot:
     container_name: tg_bot
     image: daniilfedotov/ctrade_tg_bot
-    env_file: ./tg_bot/.env
+    env_file: .env
     depends_on:
       - backend
     restart: unless-stopped
@@ -41,7 +41,7 @@ services:
   trading:
     container_name: trading
     image: daniilfedotov/ctrade_trading
-    env_file: ./trading/.env
+    env_file: .env
     depends_on:
       - backend
     restart: unless-stopped

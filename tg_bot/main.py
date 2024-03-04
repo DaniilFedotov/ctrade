@@ -38,7 +38,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('revenue', get_revenue))
     updater.dispatcher.add_handler(CommandHandler('daily', get_daily_revenue))
     updater.dispatcher.add_handler(CommandHandler('id', get_bot_id))
-    updater.dispatcher.add_handler(MessageHandler('help', get_help))
+    updater.dispatcher.add_handler(CommandHandler('help', get_help))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, get_help))
     updater.start_polling(poll_interval=1.0)
     updater.idle()

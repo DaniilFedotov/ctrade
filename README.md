@@ -59,7 +59,7 @@ TELEGRAM_CHAT_ID=XYZ  # ID of the chat to which the bot should send a message.
 BYBIT_API_KEY=XYZ  # API key for Bybit exchange.
 BYBIT_SECRET_KEY=XYZ  # Secret key for Bybit exchange.
 BINANCE_API_KEY=XYZ  # API key for Binance exchange.
-BINANCE_SECRET_KEY=XYZ  # Secret key for Binane exchange.
+BINANCE_SECRET_KEY=XYZ  # Secret key for Binance exchange.
 ```
 You can generate secret key and add your server IP in ALLOWED_HOSTS. 
 You can set up a bot account via @BotFather.
@@ -94,7 +94,9 @@ test data. To do this, enter the command in a separate terminal:
 sudo docker exec backend python manage.py testimport
 ```
 
-You can open the web interface at http://localhost:8000/home/
+The following pages are currently available: Deals, Traders.
+
+You can open the web interface at http://localhost:8000/
 
 The following commands are available for the Telegram bot:
 * `/start x` - start existing trading bot with id x;
