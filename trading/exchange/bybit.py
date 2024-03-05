@@ -16,22 +16,22 @@ session = HTTP(
 )
 
 
-def get_balance(currency):
+def get_balance(coin, in_usd):
     """Gets the absolute and relative balance of the coin."""
     balance = session.get_wallet_balance(
         accountType='UNIFIED',
-        coin=currency
+        coin=coin,
     )
     qty = float(balance['result']['list'][0]['coin'][0]['equity'])
     qty_usd = float(balance['result']['list'][0]['coin'][0]['usdValue'])
-    return qty, qty_usd
+    return qty_usd if in_usd else qty
 
 
 def check_price(symbol):
     """Checks the price of the specified coin."""
     tickers = session.get_tickers(
         category='spot',
-        coin='USDC'
+        coin='USDC',
     )
     price = None
     for ticker in tickers:
@@ -40,7 +40,7 @@ def check_price(symbol):
     return price
 
 
-def place_order(quantity, price, ticker, category, order_type, side):
+def place_order(category, ticker, side,  order_type, quantity, price=None, market_unit=None):
     """Places an order and gives its ID."""
     placed_order = session.place_order(
         category=category,
@@ -48,6 +48,6 @@ def place_order(quantity, price, ticker, category, order_type, side):
         side='Buy' if side == 'buy' else 'Sell',
         orderType=order_type,
         qty=str(quantity),
-        price=str(price)
-    )
+        price=str(price),
+        marketUnit=market_unit,)
     return placed_order['result']['orderId']

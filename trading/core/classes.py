@@ -20,28 +20,43 @@ class InitialTrader:
             case 'bybit':
                 return bybit.check_price(self.ticker)
 
-    def get_balance(self):
+    def get_balance(self, coin, in_usd=False):
         """Checks the balance of a trader."""
         match self.exchange:
             case 'binance':
                 return binance.get_balance()
             case 'bybit':
-                return bybit.get_balance(self.currency)
+                return bybit.get_balance(coin, in_usd)
 
     def create_limit_order(self, side, quantity, price):
-        """Places an order to buy or sell a coin and return order_id."""
+        """Places limit order to buy or sell a coin and return order_id."""
         match self.exchange:
             case 'binance':
                 return (binance.buy_coin(quantity, price) if side == 'buy'
                         else binance.sell_coin(quantity, price))
             case 'bybit':
                 return (bybit.place_order(
-                    quantity,
-                    price,
-                    self.ticker,
-                    'spot',
-                    'Limit',
-                    side))
+                    category='spot',
+                    ticker=self.ticker,
+                    side=side,
+                    order_type='Limit',
+                    quantity=quantity,
+                    price=price,))
+
+    def create_market_order(self, side, quantity, market_unit):
+        """Places market order to buy or sell a coin and return order_id."""
+        match self.exchange:
+            case 'binance':
+                return (binance.buy_coin(quantity) if side == 'buy'
+                        else binance.sell_coin(quantity))
+            case 'bybit':
+                return (bybit.place_order(
+                    category='spot',
+                    ticker=self.ticker,
+                    side=side,
+                    order_type='Market',
+                    quantity=quantity,
+                    market_unit=market_unit,))
 
     def value_formatting(self, value, parameter):
         decimal_number = Decimal(str(value))
