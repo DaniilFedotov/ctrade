@@ -162,8 +162,9 @@ class Level(models.Model):
         max_length=4,
         choices=SIDE_CHOICES,
     )
-    order_id = models.IntegerField(
+    order_id = models.CharField(
         verbose_name='Exchange order id.',
+        max_length=20
     )
     price = models.FloatField(
         verbose_name='Order price.'
