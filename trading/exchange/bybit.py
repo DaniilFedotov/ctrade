@@ -51,3 +51,11 @@ def place_order(category, ticker, side,  order_type, quantity, price=None, marke
         price=str(price),
         marketUnit=market_unit,)
     return placed_order['result']['orderId']
+
+
+def get_open_orders(category, order_id):
+    """Receives order information by ID."""
+    order_info = session.get_open_orders(
+        category=category,
+        orderId=order_id,)
+    return order_info['result']['list']

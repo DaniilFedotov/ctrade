@@ -58,6 +58,17 @@ class InitialTrader:
                     quantity=quantity,
                     market_unit=market_unit,))
 
+    def get_order(self, category, order_id):
+        """Receives order information by ID."""
+        match self.exchange:
+            case 'binance':
+                pass
+            case 'bybit':
+                return bybit.get_open_orders(
+                    category=category,
+                    order_id=order_id,)
+
+
     def value_formatting(self, value, parameter):
         decimal_number = Decimal(str(value))
         if parameter == 'price':

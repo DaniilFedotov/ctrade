@@ -18,7 +18,11 @@ def trading(trading_bot):
             f'http://backend:8000/api/traders/{trading_bot.trader_id}/'
         ).json()['grid']['levels']
         for level in levels:
-            order_status = 'FILLED'  # Реализовать проверку через API биржи
+            order_info = trading_bot.get_open_orders(
+                category='spot',
+                order_id=level['order_id'],)
+            if order_info:
+                order_status = order_info[0]['orderStatus']
             if order_status == 'FILLED':
                 new_level = level
                 new_level['side'] = 'buy' if level['side'] == 'sell' else 'sell'
