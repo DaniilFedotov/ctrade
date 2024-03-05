@@ -55,7 +55,10 @@ def trading(trading_bot):
 
 def install_grid(bot):
     """Places trading grid orders."""
+    balance = bot.get_balance(bot.currency)
     grid = bot.grid_settings
+    requests.patch(f'http://backend:8000/api/traders/{bot.trader_id}/',
+                   data={'lock': balance - grid['deposit']})
     step = bot.value_formatting(
         ((grid['top'] - grid['bottom']) /
          (grid['number_of_levels'] - 1)), 'price')
