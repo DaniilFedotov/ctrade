@@ -49,7 +49,7 @@ def trading(trading_bot):
                     requests.patch(
                         f'http://backend:8000/api/levels/{next_level["id"]}/',
                         data=next_level)
-                    update_deposit()
+                    update_deposit(trader, trading_bot)
         time.sleep(CHECK_TIME_SEC)
 
 
@@ -131,3 +131,19 @@ def install_grid(bot):
             level['order_id'] = order_id
             requests.post(f'http://backend:8000/api/levels/', data=level)
         return True
+
+
+def update_deposit(trader, trading_bot):
+    """Updates the deposit field for the trader and grid."""
+    balance = trading_bot.get_balance(trading_bot.currency)
+    requests.patch(f'http://backend:8000/api/traders/{trading_bot.trader_id}/',
+                   data={'current_deposit': balance})
+    grid_deposit = balance - trader['lock']
+    grid = trader['grid']
+    order_size = trading_bot.value_formatting(
+        (grid_deposit / grid['number_of_levels']) * 0.95, 'price')
+    requests.patch(
+        f'http://backend:8000/api/grids/{grid["id"]}/',
+        data={'deposit': grid_deposit, 'order_size': order_size})
+    trading_bot.grid_settings = requests.get(
+        f'http://backend:8000/api/grids/{grid["id"]}/').json()

@@ -4,12 +4,12 @@ from exchange import binance, bybit
 
 
 class InitialTrader:
-    def __init__(self, trader_id, exchange, grid):
-        self.trader_id = trader_id
-        self.exchange = exchange
-        self.grid_settings = grid
-        self.token = grid['ticker']['token']['name']
-        self.currency = grid['ticker']['currency']['name']
+    def __init__(self, trader):
+        self.trader_id = trader['id']
+        self.exchange = trader['exchange']
+        self.grid_settings = trader['grid']
+        self.token = self.grid_settings['ticker']['token']['name']
+        self.currency = self.grid_settings['ticker']['currency']['name']
         self.ticker = self.token + self.currency
 
     def check_price(self):

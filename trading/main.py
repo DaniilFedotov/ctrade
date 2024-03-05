@@ -13,20 +13,16 @@ def check_activity():
     traders = requests.get('http://backend:8000/api/traders/').json()
     for trader in traders:
         if trader['working']:
-            trading_bot = classes.InitialTrader(
-                trader_id=trader['id'],
-                exchange=trader['exchange'],
-                grid=trader['grid'])
-            return trading_bot
+            return classes.InitialTrader(trader)
     return None
 
 
 def main():
     """Bot launch wait function."""
     while True:
-        bot = check_activity()
-        if bot is not None:
-            grid_trading.trading(bot)
+        trading_bot = check_activity()
+        if trading_bot is not None:
+            grid_trading.trading(trading_bot)
         time.sleep(SLEEPTIME_SEC)
 
 
