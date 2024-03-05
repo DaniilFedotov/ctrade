@@ -97,6 +97,12 @@ class Trader(models.Model):
         verbose_name='Grid settings for trading.',
         on_delete=models.CASCADE,
     )
+    lock = models.FloatField(
+        verbose_name='Amount of locked assets.',
+        blank=True,
+        null=True,
+        default=None,
+    )
 
     class Meta:
         ordering = ('-id',)
