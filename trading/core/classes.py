@@ -58,16 +58,19 @@ class InitialTrader:
                     quantity=quantity,
                     market_unit=market_unit,))
 
-    def get_order(self, category, order_id):
+    def get_order(self, category, order_id, closed=False):
         """Receives order information by ID."""
         match self.exchange:
             case 'binance':
                 pass
             case 'bybit':
+                if closed:
+                    return bybit.get_order_history(
+                        category=category,
+                        order_id=order_id,)
                 return bybit.get_open_orders(
                     category=category,
                     order_id=order_id,)
-
 
     def value_formatting(self, value, parameter):
         decimal_number = Decimal(str(value))

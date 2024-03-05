@@ -14,31 +14,42 @@ def trading(trading_bot):
     if not grid_installed:
         grid_installed = install_grid(trading_bot)
     while grid_installed:
-        levels = requests.get(
+        trader = requests.get(
             f'http://backend:8000/api/traders/{trading_bot.trader_id}/'
-        ).json()['grid']['levels']
+        ).json()
+        cur_grid = trader['grid']
+        levels = trader['grid']['levels']
         for level in levels:
-            order_info = trading_bot.get_open_orders(
+            order_info = trading_bot.get_order(
                 category='spot',
-                order_id=level['order_id'],)
+                order_id=level['order_id'],
+                closed=True,)
             if order_info:
                 order_status = order_info[0]['orderStatus']
-            if order_status == 'FILLED':
-                new_level = level
-                new_level['side'] = 'buy' if level['side'] == 'sell' else 'sell'
-                new_level['order_id'] = 3140310  # Новый id после выставления ордера
-                new_level['price'] = 4143143  # Рассчитывать новую цену отнимая или прибавляя дельту, не забыть форматирование
-                new_level['quantity'] = 25335  # Рассчитывать новое количество, не забыть форматирование
-                new_level['inverse'] = False if level['inverse'] else True
-                requests.patch(
-                    f'http://backend:8000/api/levels/{new_level["id"]}/',
-                    data={
-                        'side': new_level['side'],
-                        'order_id': new_level['order_id'],
-                        'price': new_level['price'],
-                        'quantity': new_level['quantity'],
-                        'inverse': new_level['inverse']
-                    })
+                if order_status == 'Filled':
+                    step = cur_grid['step']
+                    next_price = (
+                        level['price'] - step
+                        if level['side'] == 'sell'
+                        else level['price'] + step)
+                    order_size = cur_grid['order_size']
+                    next_quantity = trading_bot.value_formatting(order_size / next_price, 'quantity')
+                    next_level = {'id': level['id'],
+                                  'side': 'buy' if level['side'] == 'sell' else 'sell',
+                                  'order_id': None,
+                                  'price': next_price,
+                                  'quantity': next_quantity,
+                                  'inverse': False if level['inverse'] else True,
+                                  'grid': level['grid']}
+                    order_id = trading_bot.create_limit_order(
+                        side=next_level['side'],
+                        quantity=next_level['quantity'],
+                        price=next_level['price'])
+                    next_level['order_id'] = order_id
+                    requests.patch(
+                        f'http://backend:8000/api/levels/{next_level["id"]}/',
+                        data=next_level)
+                    update_deposit()
         time.sleep(CHECK_TIME_SEC)
 
 
@@ -71,14 +82,14 @@ def install_grid(bot):
                          'order_id': None,
                          'price': top_price,
                          'quantity': top_quantity,
-                         'grid': grid['id'],
-                         'inverse': False if top_price >= cur_price else True}
+                         'inverse': False if top_price >= cur_price else True,
+                         'grid': grid['id']}
             bottom_level = {'side': 'buy' if bottom_price < cur_price else 'sell',
                             'order_id': None,
                             'price': bottom_price,
                             'quantity': bottom_quantity,
-                            'grid': grid['id'],
-                            'inverse': False if bottom_price < cur_price else True}
+                            'inverse': False if bottom_price < cur_price else True,
+                            'grid': grid['id']}
             levels.append(top_level)
             levels.append(bottom_level)
 
@@ -117,6 +128,6 @@ def install_grid(bot):
                 side=level['side'],
                 quantity=level['quantity'],
                 price=level['price'])
-            level['order_id'] = order_id['result']['orderId']
+            level['order_id'] = order_id
             requests.post(f'http://backend:8000/api/levels/', data=level)
         return True
