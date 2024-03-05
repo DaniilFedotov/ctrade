@@ -18,7 +18,7 @@ class InitialTrader:
             case 'binance':
                 return binance.check_price()
             case 'bybit':
-                return bybit.check_price()
+                return bybit.check_price(self.ticker)
 
     def get_balance(self):
         """Checks the balance of a trader."""
@@ -26,17 +26,22 @@ class InitialTrader:
             case 'binance':
                 return binance.get_balance()
             case 'bybit':
-                return bybit.get_balance()
+                return bybit.get_balance(self.currency)
 
     def create_limit_order(self, side, quantity, price):
-        """Places an order to buy or sell a coin."""
+        """Places an order to buy or sell a coin and return order_id."""
         match self.exchange:
             case 'binance':
-                return (binance.buy_coin() if side == 'buy'
+                return (binance.buy_coin(quantity, price) if side == 'buy'
                         else binance.sell_coin(quantity, price))
             case 'bybit':
-                return (bybit.buy_coin() if side == 'buy'
-                        else bybit.sell_coin(quantity, price))
+                return (bybit.place_order(
+                    quantity,
+                    price,
+                    self.ticker,
+                    'spot',
+                    'Limit',
+                    side))
 
     def value_formatting(self, value, parameter):
         decimal_number = Decimal(str(value))

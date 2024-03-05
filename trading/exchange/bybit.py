@@ -16,17 +16,36 @@ session = HTTP(
 )
 
 
-def get_balance():
-    pass
+def get_balance(currency):
+    """Finds out account balance."""
+    balance = session.get_wallet_balance(
+        accountType='UNIFIED',
+        coin=currency
+    )
+    return float(balance['result']['list'][0]['coin'][0]['equity'])
 
 
-def check_price():
-    pass
+def check_price(symbol):
+    """Checks the price of the specified coin."""
+    tickers = session.get_tickers(
+        category='spot',
+        coin='USDC'
+    )
+    price = None
+    for ticker in tickers:
+        if ticker['symbol'] == symbol:
+            price = float(ticker['lastPrice'])
+    return price
 
 
-def buy_coin(quantity, price):
-    pass
-
-
-def sell_coin(quantity, price):
-    pass
+def place_order(quantity, price, ticker, category, order_type, side):
+    """Places an order and gives its ID."""
+    placed_order = session.place_order(
+        category=category,
+        symbol=ticker,
+        side='Buy' if side == 'buy' else 'Sell',
+        orderType=order_type,
+        qty=str(quantity),
+        price=str(price)
+    )
+    return placed_order['result']['orderId']
