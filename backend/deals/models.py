@@ -70,11 +70,15 @@ class Trader(models.Model):
     )
     initial_deposit = models.FloatField(
         verbose_name='Trading bot starting deposit',
+        blank=True,
+        null=True,
+        default=None,
     )
     current_deposit = models.FloatField(
         verbose_name='Trading bot current deposit',
         blank=True,
         null=True,
+        default=None,
     )
     revenue = models.GeneratedField(
         verbose_name='Revenue for trading bot',
