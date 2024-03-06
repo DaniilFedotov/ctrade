@@ -13,7 +13,7 @@ BYBIT_SECRET_KEY = os.getenv('BYBIT_SECRET_KEY')
 session = HTTP(
     testnet=False,
     api_key=BYBIT_API_KEY,
-    apy_secret=BYBIT_SECRET_KEY
+    api_secret=BYBIT_SECRET_KEY
 )
 
 
@@ -21,7 +21,8 @@ def setup_logging():
     logging.basicConfig(
         level=logging.DEBUG,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[logging.FileHandler(f'{__name__}.log', mode='a')]
+        handlers=[logging.FileHandler(f'{__name__}.log', mode='a'),
+                  logging.StreamHandler()]
     )
 
 
