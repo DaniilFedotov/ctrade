@@ -32,6 +32,20 @@ def trading(trading_bot):
             if order_info:
                 order_status = order_info[0]['orderStatus']
                 if order_status == 'Filled':
+                    if level['inverse']:
+                        requests.patch(
+                            f'http://backend:8000/api/deals/{level["deal"]}/',
+                            data={'selling_price': 'price'})
+                        level['deal'] = None
+                    else:
+                        deal = {'ticker': trading_bot.ticker,
+                                'quantity': level['quantity'],
+                                'purchase_price': level['price'],
+                                'trader': trading_bot.trader_id}
+                        deal_info = requests.post(
+                            f'http://backend:8000/api/deals/',
+                            data=deal).json()
+                        level['deal'] = deal_info['id']
                     step = cur_grid['step']
                     next_price = (
                         level['price'] - step
@@ -39,20 +53,18 @@ def trading(trading_bot):
                         else level['price'] + step)
                     order_size = cur_grid['order_size']
                     next_quantity = trading_bot.value_formatting(order_size / next_price, 'quantity')
-                    next_level = {'id': level['id'],
-                                  'side': 'buy' if level['side'] == 'sell' else 'sell',
+                    next_level = {'side': 'buy' if level['side'] == 'sell' else 'sell',
                                   'order_id': None,
                                   'price': next_price,
                                   'quantity': next_quantity,
-                                  'inverse': False if level['inverse'] else True,
-                                  'grid': level['grid']}
+                                  'inverse': False if level['inverse'] else True}
                     order_id = trading_bot.create_limit_order(
                         side=next_level['side'],
                         quantity=next_level['quantity'],
                         price=next_level['price'])
                     next_level['order_id'] = order_id
                     requests.patch(
-                        f'http://backend:8000/api/levels/{next_level["id"]}/',
+                        f'http://backend:8000/api/levels/{level["id"]}/',
                         data=next_level)
                     update_deposit(trader, trading_bot)
         time.sleep(CHECK_TIME_SEC)
