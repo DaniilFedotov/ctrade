@@ -20,13 +20,15 @@ class InitialTrader:
             case 'bybit':
                 return bybit.check_price(self.ticker)
 
-    def get_balance(self, coin, in_usd=False):
+    def get_balance(self, coin=None, in_usd=False):
         """Checks the balance of a trader."""
         match self.exchange:
             case 'binance':
                 return binance.get_balance()
             case 'bybit':
-                return bybit.get_balance(coin, in_usd)
+                return bybit.get_balance(
+                    coin=coin,
+                    in_usd=in_usd)
 
     def create_limit_order(self, side, quantity, price):
         """Places limit order to buy or sell a coin and return order_id."""
