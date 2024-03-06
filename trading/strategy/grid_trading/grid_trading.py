@@ -10,6 +10,11 @@ def trading(trading_bot):
     trader = requests.get(
         f'http://backend:8000/api/traders/{trading_bot.trader_id}/'
     ).json()
+    if not trader['initial_deposit']:
+        balance = trading_bot.get_balance()
+        requests.patch(f'http://backend:8000/api/traders/{trading_bot.trader_id}/',
+                       data={'initial_deposit': balance,
+                             'current_deposit': balance})
     grid_installed = trader['grid']['installed']
     if not grid_installed:
         grid_installed = install_grid(trading_bot)
@@ -55,7 +60,7 @@ def trading(trading_bot):
 
 def install_grid(bot):
     """Places trading grid orders."""
-    balance = bot.get_balance(bot.currency)
+    balance = bot.get_balance()
     grid = bot.grid_settings
     requests.patch(f'http://backend:8000/api/traders/{bot.trader_id}/',
                    data={'lock': balance - grid['deposit']})
@@ -138,7 +143,7 @@ def install_grid(bot):
 
 def update_deposit(trader, trading_bot):
     """Updates the deposit field for the trader and grid."""
-    balance = trading_bot.get_balance(trading_bot.currency)
+    balance = trading_bot.get_balance()
     requests.patch(f'http://backend:8000/api/traders/{trading_bot.trader_id}/',
                    data={'current_deposit': balance})
     grid_deposit = balance - trader['lock']

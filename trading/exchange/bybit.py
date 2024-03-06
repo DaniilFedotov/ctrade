@@ -16,15 +16,18 @@ session = HTTP(
 )
 
 
-def get_balance(coin, in_usd):
+def get_balance(coin=None, in_usd=False):
     """Gets the absolute and relative balance of the coin."""
     balance = session.get_wallet_balance(
         accountType='UNIFIED',
         coin=coin,
     )
-    qty = float(balance['result']['list'][0]['coin'][0]['equity'])
-    qty_usd = float(balance['result']['list'][0]['coin'][0]['usdValue'])
-    return qty_usd if in_usd else qty
+    if coin:
+        qty = float(balance['result']['list'][0]['coin'][0]['equity'])
+        qty_usd = float(balance['result']['list'][0]['coin'][0]['usdValue'])
+        return qty_usd if in_usd else qty
+    else:
+        return float(balance['result']['list'][0]['totalEquity'])
 
 
 def check_price(symbol):
