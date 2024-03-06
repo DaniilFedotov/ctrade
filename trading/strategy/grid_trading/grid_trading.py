@@ -1,3 +1,4 @@
+import logging
 import time
 import requests
 
@@ -5,20 +6,32 @@ import requests
 CHECK_TIME_SEC = 30
 
 
+def setup_logging():
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.FileHandler(f'{__name__}.log', mode='a')]
+    )
+
+
 def trading(trading_bot):
     """Main trading function."""
+    logging.debug('Start trading')
     trader = requests.get(
         f'http://backend:8000/api/traders/{trading_bot.trader_id}/'
     ).json()
     if not trader['initial_deposit']:
+        logging.debug('Get initial_deposit')
         balance = trading_bot.get_balance()
         requests.patch(f'http://backend:8000/api/traders/{trading_bot.trader_id}/',
                        data={'initial_deposit': balance,
                              'current_deposit': balance})
     grid_installed = trader['grid']['installed']
     if not grid_installed:
+        logging.debug('Grid not installed')
         grid_installed = install_grid(trading_bot)
     while grid_installed:
+        logging.debug('Start checking orders')
         trader = requests.get(
             f'http://backend:8000/api/traders/{trading_bot.trader_id}/'
         ).json()
@@ -32,12 +45,15 @@ def trading(trading_bot):
             if order_info:
                 order_status = order_info[0]['orderStatus']
                 if order_status == 'Filled':
+                    logging.debug('Find filled order')
                     if level['inverse']:
+                        logging.debug('Deal editing')
                         requests.patch(
                             f'http://backend:8000/api/deals/{level["deal"]}/',
                             data={'selling_price': 'price'})
                         level['deal'] = None
                     else:
+                        logging.debug('Deal creating')
                         deal = {'ticker': trading_bot.ticker,
                                 'quantity': level['quantity'],
                                 'purchase_price': level['price'],
@@ -72,6 +88,7 @@ def trading(trading_bot):
 
 def install_grid(bot):
     """Places trading grid orders."""
+    logging.debug('Create grid')
     balance = bot.get_balance()
     grid = bot.grid_settings
     requests.patch(f'http://backend:8000/api/traders/{bot.trader_id}/',
@@ -125,6 +142,7 @@ def install_grid(bot):
         token_balance_usd = bot.get_balance(bot.token, in_usd=True)
         req_token_balance_usd = req_proportion * grid['deposit']
         if token_balance_usd < req_token_balance_usd:
+            logging.debug('Not enough tokens')
             difference = req_token_balance_usd - token_balance_usd
             required_qty = bot.value_formatting(
                 difference / cur_price, 'quantity')
@@ -133,6 +151,7 @@ def install_grid(bot):
                 quantity=required_qty,
                 market_unit='baseCoin',)
         elif token_balance_usd > req_token_balance_usd:
+            logging.debug('Excess tokens')
             difference = token_balance_usd - req_token_balance_usd
             excess_qty = bot.value_formatting(
                 difference / cur_price, 'quantity')
@@ -150,11 +169,13 @@ def install_grid(bot):
                 price=level['price'])
             level['order_id'] = order_id
             requests.post(f'http://backend:8000/api/levels/', data=level)
+        logging.debug('Grid completed')
         return True
 
 
 def update_deposit(trader, trading_bot):
     """Updates the deposit field for the trader and grid."""
+    logging.debug('Update deposit and grid')
     balance = trading_bot.get_balance()
     requests.patch(f'http://backend:8000/api/traders/{trading_bot.trader_id}/',
                    data={'current_deposit': balance})

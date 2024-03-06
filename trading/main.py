@@ -1,3 +1,4 @@
+import logging
 import time
 import requests
 
@@ -6,6 +7,14 @@ from strategy.grid_trading import grid_trading
 
 
 SLEEPTIME_SEC = 60
+
+
+def setup_logging():
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.FileHandler(f'{__name__}.log', mode='a')]
+    )
 
 
 def check_activity():
@@ -20,8 +29,10 @@ def check_activity():
 def main():
     """Bot launch wait function."""
     while True:
+        logging.debug('Check activity')
         trading_bot = check_activity()
         if trading_bot is not None:
+            logging.debug('Start trading')
             grid_trading.trading(trading_bot)
         time.sleep(SLEEPTIME_SEC)
 

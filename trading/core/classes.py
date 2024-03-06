@@ -1,6 +1,15 @@
+import logging
 from decimal import Decimal, ROUND_FLOOR
 
 from exchange import binance, bybit
+
+
+def setup_logging():
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.FileHandler(f'{__name__}.log', mode='a')]
+    )
 
 
 class InitialTrader:
@@ -18,6 +27,7 @@ class InitialTrader:
             case 'binance':
                 return binance.check_price()
             case 'bybit':
+                logging.debug('Check price')
                 return bybit.check_price(self.ticker)
 
     def get_balance(self, coin=None, in_usd=False):
@@ -26,6 +36,7 @@ class InitialTrader:
             case 'binance':
                 return binance.get_balance()
             case 'bybit':
+                logging.debug('Get balance')
                 return bybit.get_balance(
                     coin=coin,
                     in_usd=in_usd)
@@ -37,6 +48,7 @@ class InitialTrader:
                 return (binance.buy_coin(quantity, price) if side == 'buy'
                         else binance.sell_coin(quantity, price))
             case 'bybit':
+                logging.debug('Create limit order')
                 return (bybit.place_order(
                     category='spot',
                     ticker=self.ticker,
@@ -52,6 +64,7 @@ class InitialTrader:
                 return (binance.buy_coin(quantity) if side == 'buy'
                         else binance.sell_coin(quantity))
             case 'bybit':
+                logging.debug('Create market order')
                 return (bybit.place_order(
                     category='spot',
                     ticker=self.ticker,
@@ -67,14 +80,17 @@ class InitialTrader:
                 pass
             case 'bybit':
                 if closed:
+                    logging.debug('Get order (closed)')
                     return bybit.get_order_history(
                         category=category,
                         order_id=order_id,)
+                logging.debug('Get order')
                 return bybit.get_open_orders(
                     category=category,
                     order_id=order_id,)
 
     def value_formatting(self, value, parameter):
+        logging.debug('Value formatting')
         decimal_number = Decimal(str(value))
         if parameter == 'price':
             accuracy = '1.' + self.grid_settings['ticker']['price_precision'] * '0'
