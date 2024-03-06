@@ -34,11 +34,12 @@ class TickerSerializer(ModelSerializer):
 class LevelSerializer(ModelSerializer):
     """Serializer for the level model."""
     grid = PrimaryKeyRelatedField(queryset=Grid.objects.all())
+    deal = PrimaryKeyRelatedField(queryset=Deal.objects.all())
 
     class Meta:
         model = Level
         fields = ('id', 'side', 'order_id', 'price',
-                  'quantity', 'inverse', 'grid',)
+                  'quantity', 'inverse', 'grid', 'deal',)
 
 
 class GridSerializer(ModelSerializer):
@@ -67,14 +68,12 @@ class GridSerializer(ModelSerializer):
 
 class DealSerializer(ModelSerializer):
     """Serializer for the deal model."""
-    ticker = TickerSerializer()
 
     class Meta:
         model = Deal
         fields = ('id', 'opening_date', 'closed', 'ticker',
                   'quantity', 'purchase_price', 'selling_price',
                   'revenue', 'trader',)
-        read_only_fields = ('id',)
 
     def update(self, instance, validated_data):
         quantity = instance.quantity

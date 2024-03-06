@@ -192,6 +192,13 @@ class Level(models.Model):
         on_delete=models.CASCADE,
         related_name='levels'
     )
+    deal = models.ForeignKey(
+        'Deal',
+        verbose_name='Related deal.',
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+    )
 
 
 class Token(models.Model):
