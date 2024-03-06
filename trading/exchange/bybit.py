@@ -46,13 +46,10 @@ def check_price(symbol):
     logging.debug('Check price (bybit)')
     tickers = session.get_tickers(
         category='spot',
-        coin='USDC',
+        symbol=symbol
     )
-    price = None
-    for ticker in tickers:
-        if ticker['symbol'] == symbol:
-            price = float(ticker['lastPrice'])
-    return price
+    price = tickers['result']['list'][0]['lastPrice']
+    return float(price)
 
 
 def place_order(category, ticker, side,  order_type, quantity, price=None, market_unit=None):
