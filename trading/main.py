@@ -21,11 +21,14 @@ def setup_logging():
 
 def check_activity():
     """Checks the status of trading bots."""
-    traders = requests.get('http://backend:8000/api/traders/').json()
-    for trader in traders:
-        if trader['working']:
-            return classes.InitialTrader(trader)
-    return None
+    try:
+        traders = requests.get('http://backend:8000/api/traders/').json()
+        for trader in traders:
+            if trader['working']:
+                return classes.InitialTrader(trader)
+        return None
+    except Exception:
+        return None
 
 
 def main():
