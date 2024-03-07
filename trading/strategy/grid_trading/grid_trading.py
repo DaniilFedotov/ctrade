@@ -122,13 +122,15 @@ def install_grid(bot):
                          'price': top_price,
                          'quantity': top_quantity,
                          'inverse': False if top_price >= cur_price else True,
-                         'grid': grid['id']}
+                         'grid': grid['id'],
+                         'deal': None}
             bottom_level = {'side': 'buy' if bottom_price < cur_price else 'sell',
                             'order_id': None,
                             'price': bottom_price,
                             'quantity': bottom_quantity,
                             'inverse': False if bottom_price < cur_price else True,
-                            'grid': grid['id']}
+                            'grid': grid['id'],
+                            'deal': None}
             levels.append(top_level)
             levels.append(bottom_level)
 
