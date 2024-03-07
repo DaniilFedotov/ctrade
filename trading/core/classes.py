@@ -1,3 +1,4 @@
+import sys
 import logging
 from decimal import Decimal, ROUND_FLOOR
 
@@ -8,7 +9,8 @@ def setup_logging():
     logging.basicConfig(
         level=logging.DEBUG,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[logging.FileHandler(f'{__name__}.log', mode='a')]
+        handlers=[logging.FileHandler(f'{__name__}.log', mode='a'),
+                  logging.StreamHandler(stream=sys.stdout)]
     )
 
 

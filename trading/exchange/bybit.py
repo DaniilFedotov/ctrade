@@ -1,3 +1,4 @@
+import sys
 import logging
 import os
 
@@ -22,7 +23,7 @@ def setup_logging():
         level=logging.DEBUG,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[logging.FileHandler(f'{__name__}.log', mode='a'),
-                  logging.StreamHandler()]
+                  logging.StreamHandler(stream=sys.stdout)]
     )
 
 

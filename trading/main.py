@@ -1,3 +1,4 @@
+import sys
 import logging
 import time
 import requests
@@ -13,7 +14,8 @@ def setup_logging():
     logging.basicConfig(
         level=logging.DEBUG,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[logging.FileHandler(f'{__name__}.log', mode='a')]
+        handlers=[logging.FileHandler(f'{__name__}.log', mode='a'),
+                  logging.StreamHandler(stream=sys.stdout)]
     )
 
 
