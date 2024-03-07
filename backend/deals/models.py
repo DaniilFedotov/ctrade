@@ -174,7 +174,10 @@ class Level(models.Model):
     )
     order_id = models.CharField(
         verbose_name='Exchange order id.',
-        max_length=20
+        max_length=20,
+        blank=True,
+        null=True,
+        default=None,
     )
     price = models.FloatField(
         verbose_name='Order price.'
@@ -196,6 +199,7 @@ class Level(models.Model):
         'Deal',
         verbose_name='Related deal.',
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
         default=None,
     )
