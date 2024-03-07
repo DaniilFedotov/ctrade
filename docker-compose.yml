@@ -36,6 +36,7 @@ services:
     env_file: .env
     depends_on:
       - backend
+    command: ["python", "main.py"]
     restart: unless-stopped
 
   trading:
@@ -44,4 +45,5 @@ services:
     env_file: .env
     depends_on:
       - backend
+    command: ["python", "main.py"]
     restart: unless-stopped
