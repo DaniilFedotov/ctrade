@@ -109,14 +109,16 @@ def install_grid(bot):
         cur_price = bot.value_formatting(bot.check_price(), 'price')
         levels = []
         for ind in range(int(grid['number_of_levels'] / 2)):
-            initial_top_price = bot.value_formatting(
-                middle + (0.5 + ind) * step, 'price')
-            initial_bottom_price = bot.value_formatting(
-                middle - (0.5 + ind) * step, 'price')
+            initial_top_price = middle + (0.5 + ind) * step
+            initial_bottom_price = middle - (0.5 + ind) * step
             right_position_top = initial_top_price >= cur_price
             right_position_bottom = initial_bottom_price < cur_price
-            top_price = initial_top_price if right_position_top else initial_top_price - step
-            bottom_price = initial_bottom_price if right_position_bottom else initial_bottom_price + step
+            top_price = bot.value_formatting(
+                initial_top_price if right_position_top else
+                initial_top_price - step, 'price')
+            bottom_price = bot.value_formatting(
+                initial_bottom_price if right_position_bottom else
+                initial_bottom_price + step, 'price')
             top_quantity = bot.value_formatting(
                 order_size / top_price, 'quantity')
             bottom_quantity = bot.value_formatting(
