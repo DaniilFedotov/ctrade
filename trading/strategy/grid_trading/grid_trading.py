@@ -53,10 +53,10 @@ def trading(trading_bot):
                         requests.patch(
                             f'http://backend:8000/api/deals/{level["deal"]}/',
                             data={'selling_price': 'price'})
-                        level['deal'] = None
+                        level['deal'] = ''
                     else:
                         logging.debug('Deal creating')
-                        deal = {'ticker': trading_bot.ticker,
+                        deal = {'ticker': trading_bot.grid_settings['ticker']['id'],
                                 'quantity': level['quantity'],
                                 'purchase_price': level['price'],
                                 'trader': trading_bot.trader_id}
@@ -123,14 +123,14 @@ def install_grid(bot):
                          'quantity': top_quantity,
                          'inverse': False if top_price >= cur_price else True,
                          'grid': grid['id'],
-                         'deal': None}
+                         'deal': ''}
             bottom_level = {'side': 'buy' if bottom_price < cur_price else 'sell',
                             'order_id': None,
                             'price': bottom_price,
                             'quantity': bottom_quantity,
                             'inverse': False if bottom_price < cur_price else True,
                             'grid': grid['id'],
-                            'deal': None}
+                            'deal': ''}
             levels.append(top_level)
             levels.append(bottom_level)
 
