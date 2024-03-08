@@ -34,11 +34,9 @@ class TickerSerializer(ModelSerializer):
 class LevelSerializer(ModelSerializer):
     """Serializer for the level model."""
     grid = PrimaryKeyRelatedField(queryset=Grid.objects.all(),
-                                  allow_null=True,
-                                  allow_empty=True)
+                                  allow_null=True)
     deal = PrimaryKeyRelatedField(queryset=Deal.objects.all(),
-                                  allow_null=True,
-                                  allow_empty=True)
+                                  allow_null=True)
 
     class Meta:
         model = Level
