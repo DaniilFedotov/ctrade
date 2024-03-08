@@ -109,26 +109,30 @@ def install_grid(bot):
         cur_price = bot.value_formatting(bot.check_price(), 'price')
         levels = []
         for ind in range(int(grid['number_of_levels'] / 2)):
-            top_price = bot.value_formatting(
+            initial_top_price = bot.value_formatting(
                 middle + (0.5 + ind) * step, 'price')
-            bottom_price = bot.value_formatting(
+            initial_bottom_price = bot.value_formatting(
                 middle - (0.5 + ind) * step, 'price')
+            right_position_top = initial_top_price >= cur_price
+            right_position_bottom = initial_bottom_price < cur_price
+            top_price = initial_top_price if right_position_top else initial_top_price - step
+            bottom_price = initial_bottom_price if right_position_bottom else initial_bottom_price + step
             top_quantity = bot.value_formatting(
                 order_size / top_price, 'quantity')
             bottom_quantity = bot.value_formatting(
                 order_size / bottom_price, 'quantity')
-            top_level = {'side': 'sell' if top_price >= cur_price else 'buy',
+            top_level = {'side': 'sell' if right_position_top else 'buy',
                          'order_id': None,
                          'price': top_price,
                          'quantity': top_quantity,
-                         'inverse': False if top_price >= cur_price else True,
+                         'inverse': False if right_position_top else True,
                          'grid': grid['id'],
                          'deal': ''}
-            bottom_level = {'side': 'buy' if bottom_price < cur_price else 'sell',
+            bottom_level = {'side': 'buy' if right_position_bottom else 'sell',
                             'order_id': None,
                             'price': bottom_price,
                             'quantity': bottom_quantity,
-                            'inverse': False if bottom_price < cur_price else True,
+                            'inverse': False if right_position_bottom else True,
                             'grid': grid['id'],
                             'deal': ''}
             levels.append(top_level)
