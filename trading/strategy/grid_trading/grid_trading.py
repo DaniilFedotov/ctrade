@@ -38,7 +38,7 @@ def trading(trading_bot):
             f'http://backend:8000/api/traders/{trading_bot.trader_id}/'
         ).json()
         if not trader['working']:
-            finish_trading(trader, trading_bot)
+            finish_trading(trading_bot)
             break
         cur_grid = trader['grid']
         levels = trader['grid']['levels']
