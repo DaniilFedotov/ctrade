@@ -83,3 +83,9 @@ def get_order_history(category, order_id):
         category=category,
         orderId=order_id,)
     return order_info['result']['list']
+
+
+def cancel_all_orders():
+    """Cancels all placed orders."""
+    logging.debug('Cancels all orders (bybit)')
+    session.cancel_all_orders(category='spot')

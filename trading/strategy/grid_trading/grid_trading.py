@@ -204,6 +204,7 @@ def update_deposit(trader, trading_bot):
 
 
 def finish_trading(trading_bot):
+    trading_bot.cancel_all_orders()
     token_balance = trading_bot.value_formatting(
         trading_bot.get_balance(trading_bot.token), 'quantity')
     trading_bot.create_market_order(

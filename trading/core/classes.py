@@ -92,6 +92,7 @@ class InitialTrader:
                     order_id=order_id,)
 
     def value_formatting(self, value, parameter):
+        """Formats numbers according to exchange requirements."""
         logging.debug('Value formatting')
         decimal_number = Decimal(str(value))
         if parameter == 'price':
@@ -102,3 +103,8 @@ class InitialTrader:
             accuracy = '1.0'
         return float(decimal_number.quantize(
             Decimal(accuracy), ROUND_FLOOR))
+
+    def cancel_all_orders(self):
+        """Cancels all orders."""
+        logging.debug('Cancel orders')
+        bybit.cancel_all_orders()
