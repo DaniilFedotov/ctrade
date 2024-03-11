@@ -37,6 +37,9 @@ def trading(trading_bot):
         trader = requests.get(
             f'http://backend:8000/api/traders/{trading_bot.trader_id}/'
         ).json()
+        if not trader['working']:
+            finish_trading(trader, trading_bot)
+            break
         cur_grid = trader['grid']
         levels = trader['grid']['levels']
         for level in levels:
@@ -198,3 +201,12 @@ def update_deposit(trader, trading_bot):
         data={'deposit': grid_deposit, 'order_size': order_size})
     trading_bot.grid_settings = requests.get(
         f'http://backend:8000/api/grids/{grid["id"]}/').json()
+
+
+def finish_trading(trading_bot):
+    token_balance = trading_bot.value_formatting(
+        trading_bot.get_balance(trading_bot.token), 'quantity')
+    trading_bot.create_market_order(
+        side='sell',
+        quantity=token_balance,
+        market_unit='baseCoin')
