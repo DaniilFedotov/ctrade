@@ -5,7 +5,7 @@ import requests
 
 
 CHECK_TIME_SEC = 30
-SAFETY_FACTOR = 1.01
+SAFETY_FACTOR = 1.02
 API_URL = 'http://backend:8000/api'
 
 
