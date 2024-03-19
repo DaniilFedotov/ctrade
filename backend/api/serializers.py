@@ -51,7 +51,7 @@ class GridSerializer(ModelSerializer):
 
     class Meta:
         model = Grid
-        fields = ('id', 'top', 'bottom', 'number_of_levels',
+        fields = ('id', 'bottom', 'top', 'number_of_levels',
                   'deposit', 'ticker', 'installed', 'step',
                   'order_size', 'levels',)
 

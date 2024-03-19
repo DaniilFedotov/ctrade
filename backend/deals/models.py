@@ -120,11 +120,11 @@ class Grid(models.Model):
     id = models.AutoField(
         primary_key=True,
     )
-    top = models.FloatField(
-        verbose_name='Grid top border.'
-    )
     bottom = models.FloatField(
         verbose_name='Grid bottom border.'
+    )
+    top = models.FloatField(
+        verbose_name='Grid top border.'
     )
     number_of_levels = models.PositiveIntegerField(
         verbose_name='Number of grid levels.',
