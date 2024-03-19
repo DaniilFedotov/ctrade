@@ -1,4 +1,3 @@
-import os
 import datetime
 
 import requests
@@ -14,7 +13,7 @@ def start_trading(update, context):
         if trader.json()['working']:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=f'This bot is already running.')
+                text='This bot is already running.')
         else:
             response = requests.patch(
                 f'http://backend:8000/api/traders/{bot_id}/',
@@ -26,11 +25,11 @@ def start_trading(update, context):
             else:
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
-                    text=f'Unexpected error.')
+                    text='Unexpected error.')
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f'Bot number not specified.')
+            text='Bot number not specified.')
 
 
 def stop_trading(update, context):
@@ -51,15 +50,15 @@ def stop_trading(update, context):
             else:
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
-                    text=f'Unexpected error.')
+                    text='Unexpected error.')
         else:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=f'This bot has already been stopped.')
+                text='This bot has already been stopped.')
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f'Bot number not specified.')
+            text='Bot number not specified.')
 
 
 def get_revenue(update, context):
@@ -109,4 +108,4 @@ def get_bot_id(update, context):
     if bot_id is None:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f'No running bots found.')
+            text='No running bots found.')

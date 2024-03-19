@@ -13,13 +13,13 @@ load_dotenv()
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-HELP_TEXT = (f'Bot is running. You can use the following commands:\n'
-             f'/start x - start existing trading bot with id x;\n'
-             f'/stop x - stop trading bot with id x;\n'
-             f'/revenue x - get revenue for the last x trades (default - 5);\n'
-             f'/daily - get revenue for today;\n'
-             f'/id - get the id of a running bots;\n'
-             f'/help - get help message.')
+HELP_TEXT = ('Bot is running. You can use the following commands:\n'
+             '/start x - start existing trading bot with id x;\n'
+             '/stop x - stop trading bot with id x;\n'
+             '/revenue x - get revenue for the last x trades (default - 5);\n'
+             '/daily - get revenue for today;\n'
+             '/id - get the id of a running bots;\n'
+             '/help - get help message.')
 
 bot = Bot(token=TELEGRAM_TOKEN)
 updater = Updater(token=TELEGRAM_TOKEN)
