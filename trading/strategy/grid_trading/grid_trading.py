@@ -147,29 +147,24 @@ def install_grid(bot):
             levels.append(top_level)
             levels.append(bottom_level)
 
-        number_of_sell_levels = 0
+        req_token_balance = 0
         for level in levels:
             if level['side'] == 'sell':
-                number_of_sell_levels += 1
+                req_token_balance += level['quantity']
 
-        token_balance_usd = bot.get_balance(bot.token, in_usd=True)
-        req_token_balance_usd = (
-                number_of_sell_levels * grid['deposit'] /
-                grid['number_of_levels'])
-        if token_balance_usd < req_token_balance_usd:
+        token_balance = bot.get_balance(bot.token)
+        if token_balance < req_token_balance:
             logging.debug('Not enough tokens')
             required_qty = bot.value_formatting(
-                (req_token_balance_usd - token_balance_usd) * 1.005 /
-                cur_price, 'quantity')
+                (req_token_balance - token_balance) * 1.005, 'quantity')
             bot.create_market_order(
                 side='buy',
                 quantity=required_qty,
                 market_unit='baseCoin',)
-        elif token_balance_usd > req_token_balance_usd:
+        elif token_balance > req_token_balance:
             logging.debug('Excess tokens')
             excess_qty = bot.value_formatting(
-                token_balance_usd - req_token_balance_usd /
-                cur_price, 'quantity')
+                token_balance - req_token_balance, 'quantity')
             bot.create_market_order(
                 side='sell',
                 quantity=excess_qty,
