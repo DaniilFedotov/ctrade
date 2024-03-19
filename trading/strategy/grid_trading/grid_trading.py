@@ -102,7 +102,7 @@ def install_grid(bot):
         ((grid['top'] - grid['bottom']) /
          (grid['number_of_levels'] - 1)), 'price')
     order_size = bot.value_formatting(
-        grid['deposit'] / grid['number_of_levels'], 'price')
+        (grid['deposit'] / grid['number_of_levels']) * 0.95, 'price')
     requests.patch(
         f'http://backend:8000/api/grids/{grid["id"]}/',
         data={'step': step, 'order_size': order_size})
@@ -195,7 +195,7 @@ def update_deposit(trader, trading_bot):
     grid_deposit = balance - trader['lock']
     grid = trader['grid']
     order_size = trading_bot.value_formatting(
-        grid_deposit / grid['number_of_levels'], 'price')
+        (grid_deposit / grid['number_of_levels']) * 0.95, 'price')
     requests.patch(
         f'http://backend:8000/api/grids/{grid["id"]}/',
         data={'deposit': grid_deposit, 'order_size': order_size})
