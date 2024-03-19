@@ -27,15 +27,14 @@ Clone the repository:
 ```sh
 git clone https://github.com/DaniilFedotov/ctrade.git
 ```
-
 Go to the project folder and create a .env file:
 ```sh
 cd ctrade
 ```
-Fill the .env file in accordance with the example in .env.example:
 ```sh
 touch .env
 ```
+Fill the .env file in accordance with the example in .env.example:
 ```
 # Django settings.
 SECRET_KEY=XYZ  # Django secret key.
