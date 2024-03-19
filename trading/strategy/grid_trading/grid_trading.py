@@ -159,7 +159,7 @@ def install_grid(bot):
         if token_balance_usd < req_token_balance_usd:
             logging.debug('Not enough tokens')
             required_qty = bot.value_formatting(
-                (req_token_balance_usd - token_balance_usd) /
+                (req_token_balance_usd - token_balance_usd) * 1.005 /
                 cur_price, 'quantity')
             bot.create_market_order(
                 side='buy',
