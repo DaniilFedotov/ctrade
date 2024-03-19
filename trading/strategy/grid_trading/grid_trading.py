@@ -5,6 +5,7 @@ import requests
 
 
 CHECK_TIME_SEC = 30
+SAFETY_FACTOR = 1.01
 API_URL = 'http://backend:8000/api'
 
 
@@ -156,7 +157,8 @@ def install_grid(bot):
         if token_balance < req_token_balance:
             logging.debug('Not enough tokens')
             required_qty = bot.value_formatting(
-                (req_token_balance - token_balance) * 1.005, 'quantity')
+                (req_token_balance - token_balance) *
+                SAFETY_FACTOR, 'quantity')
             bot.create_market_order(
                 side='buy',
                 quantity=required_qty,
