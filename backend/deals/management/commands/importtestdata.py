@@ -38,5 +38,6 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.SUCCESS(
                         'Previous data deleted.'))
                 model.objects.bulk_create(records)
-                self.stdout.write(self.style.SUCCESS(f'Data from {file}.scv imported.'))
+                self.stdout.write(self.style.SUCCESS(
+                    f'Data from {file}.scv imported.'))
                 csvfile.close()

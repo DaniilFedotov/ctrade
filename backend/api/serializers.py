@@ -16,7 +16,7 @@ class TokenSerializer(ModelSerializer):
 class CurrencySerializer(ModelSerializer):
     """Serializer for the currency model."""
     class Meta:
-        model = Token
+        model = Currency
         fields = ('id', 'name',)
 
 
