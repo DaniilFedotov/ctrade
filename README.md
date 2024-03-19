@@ -25,15 +25,12 @@ any responsibility for your trading results.
 
 Clone the repository:
 ```sh
-https://github.com/DaniilFedotov/ctrade.git
+git clone https://github.com/DaniilFedotov/ctrade.git
 ```
 
 Go to the project folder and create a .env file:
 ```sh
 cd ctrade
-```
-```sh
-touch .env
 ```
 Fill the .env file in accordance with the example in .env.example:
 ```sh
