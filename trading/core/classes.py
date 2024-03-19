@@ -96,9 +96,11 @@ class InitialTrader:
         logging.debug('Value formatting')
         decimal_number = Decimal(str(value))
         if parameter == 'price':
-            accuracy = '1.' + self.grid_settings['ticker']['price_precision'] * '0'
+            accuracy = ('1.' + '0' *
+                        self.grid_settings['ticker']['price_precision'])
         elif parameter == 'quantity':
-            accuracy = '1.' + self.grid_settings['ticker']['quantity_precision'] * '0'
+            accuracy = ('1.' + '0' *
+                        self.grid_settings['ticker']['quantity_precision'])
         else:
             accuracy = '1.0'
         return float(decimal_number.quantize(

@@ -60,7 +60,8 @@ def trading(trading_bot):
                         level['deal'] = ''
                     else:
                         logging.debug('Deal creating')
-                        deal = {'ticker': trading_bot.grid_settings['ticker']['id'],
+                        ticker = trading_bot.grid_settings['ticker']['id']
+                        deal = {'ticker': ticker,
                                 'quantity': level['quantity'],
                                 'purchase_price': level['price'],
                                 'trader': trading_bot.trader_id}
@@ -74,12 +75,14 @@ def trading(trading_bot):
                         if level['side'] == 'sell'
                         else level['price'] + step)
                     order_size = cur_grid['order_size']
-                    next_quantity = trading_bot.value_formatting(order_size / next_price, 'quantity')
-                    next_level = {'side': 'buy' if level['side'] == 'sell' else 'sell',
-                                  'order_id': None,
-                                  'price': next_price,
-                                  'quantity': next_quantity,
-                                  'inverse': False if level['inverse'] else True}
+                    next_quantity = trading_bot.value_formatting(
+                        order_size / next_price, 'quantity')
+                    next_level = {
+                        'side': 'buy' if level['side'] == 'sell' else 'sell',
+                        'order_id': None,
+                        'price': next_price,
+                        'quantity': next_quantity,
+                        'inverse': False if level['inverse'] else True}
                     order_id = trading_bot.create_limit_order(
                         side=next_level['side'],
                         quantity=next_level['quantity'],
@@ -115,60 +118,58 @@ def install_grid(bot):
         for ind in range(int(grid['number_of_levels'] / 2)):
             initial_top_price = middle + (0.5 + ind) * step
             initial_bottom_price = middle - (0.5 + ind) * step
-            right_position_top = initial_top_price >= cur_price
-            right_position_bottom = initial_bottom_price < cur_price
+            right_pos_top = initial_top_price >= cur_price
+            right_pos_bottom = initial_bottom_price < cur_price
             top_price = bot.value_formatting(
-                initial_top_price if right_position_top else
+                initial_top_price if right_pos_top else
                 initial_top_price - step, 'price')
             bottom_price = bot.value_formatting(
-                initial_bottom_price if right_position_bottom else
+                initial_bottom_price if right_pos_bottom else
                 initial_bottom_price + step, 'price')
             top_quantity = bot.value_formatting(
                 order_size / top_price, 'quantity')
             bottom_quantity = bot.value_formatting(
                 order_size / bottom_price, 'quantity')
-            top_level = {'side': 'sell' if right_position_top else 'buy',
+            top_level = {'side': 'sell' if right_pos_top else 'buy',
                          'order_id': None,
                          'price': top_price,
                          'quantity': top_quantity,
-                         'inverse': False if right_position_top else True,
+                         'inverse': False if right_pos_top else True,
                          'grid': grid['id'],
                          'deal': ''}
-            bottom_level = {'side': 'buy' if right_position_bottom else 'sell',
+            bottom_level = {'side': 'buy' if right_pos_bottom else 'sell',
                             'order_id': None,
                             'price': bottom_price,
                             'quantity': bottom_quantity,
-                            'inverse': False if right_position_bottom else True,
+                            'inverse': False if right_pos_bottom else True,
                             'grid': grid['id'],
                             'deal': ''}
             levels.append(top_level)
             levels.append(bottom_level)
 
         number_of_sell_levels = 0
-        number_of_buy_levels = 0
         for level in levels:
             if level['side'] == 'sell':
                 number_of_sell_levels += 1
-            else:
-                number_of_buy_levels += 1
 
-        req_proportion = number_of_sell_levels / grid['number_of_levels']
         token_balance_usd = bot.get_balance(bot.token, in_usd=True)
-        req_token_balance_usd = req_proportion * grid['deposit']
+        req_token_balance_usd = (
+                number_of_sell_levels * grid['deposit'] /
+                grid['number_of_levels'])
         if token_balance_usd < req_token_balance_usd:
             logging.debug('Not enough tokens')
-            difference = req_token_balance_usd - token_balance_usd
             required_qty = bot.value_formatting(
-                difference / cur_price, 'quantity')
+                (req_token_balance_usd - token_balance_usd) /
+                cur_price, 'quantity')
             bot.create_market_order(
                 side='buy',
                 quantity=required_qty,
                 market_unit='baseCoin',)
         elif token_balance_usd > req_token_balance_usd:
             logging.debug('Excess tokens')
-            difference = token_balance_usd - req_token_balance_usd
             excess_qty = bot.value_formatting(
-                difference / cur_price, 'quantity')
+                token_balance_usd - req_token_balance_usd /
+                cur_price, 'quantity')
             bot.create_market_order(
                 side='sell',
                 quantity=excess_qty,

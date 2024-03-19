@@ -53,7 +53,8 @@ def check_price(symbol):
     return float(price)
 
 
-def place_order(category, ticker, side,  order_type, quantity, price=None, market_unit=None):
+def place_order(category, ticker, side,  order_type,
+                quantity, price=None, market_unit=None):
     """Places an order and gives its ID."""
     logging.debug('Place order (bybit)')
     placed_order = session.place_order(
