@@ -57,33 +57,34 @@ def trading(trading_bot):
                         logging.debug('Deal editing')
                         requests.patch(
                             f'{API_URL}/deals/{level["deal"]}/',
-                            data={'selling_price': 'price'})
+                            data={'exit_price': level['price']})
                         level['deal'] = ''
                     else:
                         logging.debug('Deal creating')
                         ticker = trading_bot.grid_settings['ticker']['id']
+                        side = 'long' if level['side'] == 'buy' else 'short'
                         deal = {'ticker': ticker,
+                                'side': side,
                                 'quantity': level['quantity'],
-                                'purchase_price': level['price'],
+                                'entry_price': level['price'],
                                 'trader': trading_bot.trader_id}
                         deal_info = requests.post(
                             f'{API_URL}/deals/',
                             data=deal).json()
                         level['deal'] = deal_info['id']
-                    step = cur_grid['step']
                     next_price = (
-                        level['price'] - step
+                        level['price'] - cur_grid['step']
                         if level['side'] == 'sell'
-                        else level['price'] + step)
-                    order_size = cur_grid['order_size']
+                        else level['price'] + cur_grid['step'])
                     next_quantity = trading_bot.value_formatting(
-                        order_size / next_price, 'quantity')
+                        cur_grid['order_size'] / next_price, 'quantity')
                     next_level = {
                         'side': 'buy' if level['side'] == 'sell' else 'sell',
                         'order_id': None,
                         'price': next_price,
                         'quantity': next_quantity,
-                        'inverse': False if level['inverse'] else True}
+                        'inverse': False if level['inverse'] else True,
+                        'deal': level['deal']}
                     order_id = trading_bot.create_limit_order(
                         side=next_level['side'],
                         quantity=next_level['quantity'],
@@ -152,6 +153,21 @@ def install_grid(bot):
         for level in levels:
             if level['side'] == 'sell':
                 req_token_balance += level['quantity']
+            if level['inverse']:
+                ticker = grid['ticker']['id']
+                init_price = (level['price'] - grid['step']
+                              if level['side'] == 'sell'
+                              else level['price'] + grid['step'])
+                side = 'long' if level['side'] == 'sell' else 'short'
+                deal = {'ticker': ticker,
+                        'side': side,
+                        'quantity': level['quantity'],
+                        'entry_price': init_price,
+                        'trader': bot.trader_id}
+                deal_info = requests.post(
+                    f'{API_URL}/deals/',
+                    data=deal).json()
+                level['deal'] = deal_info['id']
 
         token_balance = bot.get_balance(bot.token)
         if token_balance < req_token_balance:
