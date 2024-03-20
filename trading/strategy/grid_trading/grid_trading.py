@@ -4,8 +4,9 @@ import time
 import requests
 
 
-CHECK_TIME_SEC = 30
+CHECK_TIME_SEC = 60
 SAFETY_FACTOR = 1.02
+MINIMUM_ORDER_SIZE = 5
 API_URL = 'http://backend:8000/api'
 
 
@@ -183,10 +184,12 @@ def install_grid(bot):
             logging.debug('Excess tokens')
             excess_qty = bot.value_formatting(
                 token_balance - req_token_balance, 'quantity')
-            bot.create_market_order(
-                side='sell',
-                quantity=excess_qty,
-                market_unit='baseCoin',)
+            cur_price = bot.value_formatting(bot.check_price(), 'price')
+            if excess_qty * cur_price >= MINIMUM_ORDER_SIZE:
+                bot.create_market_order(
+                    side='sell',
+                    quantity=excess_qty,
+                    market_unit='baseCoin',)
         else:
             pass
 
@@ -226,3 +229,6 @@ def finish_trading(trading_bot):
         side='sell',
         quantity=token_balance,
         market_unit='baseCoin')
+    requests.patch(
+        f'{API_URL}/grids/{trading_bot.grid_settings["id"]}/',
+        data={'installed': False})
