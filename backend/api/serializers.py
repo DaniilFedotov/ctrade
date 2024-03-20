@@ -74,15 +74,14 @@ class DealSerializer(ModelSerializer):
     class Meta:
         model = Deal
         fields = ('id', 'opening_date', 'closed', 'ticker',
-                  'quantity', 'purchase_price', 'selling_price',
+                  'side', 'quantity', 'entry_price', 'exit_price',
                   'revenue', 'trader',)
 
     def update(self, instance, validated_data):
-        quantity = instance.quantity
-        purchase_price = instance.purchase_price
-        selling_price = validated_data['selling_price']
-        instance.selling_price = selling_price
-        revenue = round(quantity * (selling_price - purchase_price), 2)
+        exit_price = validated_data['exit_price']
+        instance.exit_price = exit_price
+        revenue = round(
+            instance.quantity * (exit_price - instance.entry_price), 2)
         instance.revenue = revenue
         instance.closed = True
         instance.save()

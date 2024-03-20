@@ -21,13 +21,16 @@ class Deal(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    side = models.CharField(
+        verbose_name='Deal type.'
+    )
     quantity = models.FloatField(
         verbose_name='Quantity purchased',
     )
-    purchase_price = models.FloatField(
+    entry_price = models.FloatField(
         verbose_name='Trade entry price',
     )
-    selling_price = models.FloatField(
+    exit_price = models.FloatField(
         verbose_name='Trade exit price',
         blank=True,
         null=True,
