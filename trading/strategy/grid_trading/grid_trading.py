@@ -56,8 +56,9 @@ def trading(trading_bot):
                     logging.debug('Find filled order')
                     if level['inverse']:
                         logging.debug('Deal editing')
+                        deal_id = level['deal']
                         requests.patch(
-                            f'{API_URL}/deals/{level["deal"]}/',
+                            f'{API_URL}/deals/{deal_id}/',
                             data={'exit_price': level['price']})
                         level['deal'] = ''
                     else:
@@ -73,10 +74,10 @@ def trading(trading_bot):
                             f'{API_URL}/deals/',
                             data=deal).json()
                         level['deal'] = deal_info['id']
-                    next_price = (
+                    next_price = trading_bot.value_formatting(
                         level['price'] - cur_grid['step']
                         if level['side'] == 'sell'
-                        else level['price'] + cur_grid['step'])
+                        else level['price'] + cur_grid['step'], 'price')
                     next_quantity = trading_bot.value_formatting(
                         cur_grid['order_size'] / next_price, 'quantity')
                     next_level = {
