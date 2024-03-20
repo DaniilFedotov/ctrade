@@ -155,9 +155,9 @@ def install_grid(bot):
                 req_token_balance += level['quantity']
             if level['inverse']:
                 ticker = grid['ticker']['id']
-                init_price = (level['price'] - grid['step']
+                init_price = (level['price'] - step
                               if level['side'] == 'sell'
-                              else level['price'] + grid['step'])
+                              else level['price'] + step)
                 side = 'long' if level['side'] == 'sell' else 'short'
                 deal = {'ticker': ticker,
                         'side': side,
