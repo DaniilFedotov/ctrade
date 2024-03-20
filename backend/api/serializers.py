@@ -79,10 +79,14 @@ class DealSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         exit_price = validated_data['exit_price']
+        side = validated_data['side']
         instance.exit_price = exit_price
-        revenue = round(
-            instance.quantity * (exit_price - instance.entry_price), 2)
-        instance.revenue = revenue
+        if side == 'long':
+            instance.revenue = round(
+                instance.quantity * (exit_price - instance.entry_price), 2)
+        else:
+            instance.revenue = round(
+                instance.quantity * (instance.entry_price - exit_price), 2)
         instance.closed = True
         instance.save()
         return instance
