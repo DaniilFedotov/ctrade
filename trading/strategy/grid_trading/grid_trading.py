@@ -56,9 +56,8 @@ def trading(trading_bot):
                     logging.debug('Find filled order')
                     if level['inverse']:
                         logging.debug('Deal editing')
-                        deal_id = level['deal']
                         requests.patch(
-                            f'{API_URL}/deals/{deal_id}/',
+                            f'{API_URL}/deals/{level["deal"]}/',
                             data={'exit_price': level['price']})
                         level['deal'] = ''
                     else:
