@@ -56,15 +56,15 @@ class GridSerializer(ModelSerializer):
                   'order_size', 'levels',)
 
     def get_levels(self, obj):
-        grid = obj
-        levels = grid.levels.values(
+        levels = obj.levels.values(
             'id',
             'side',
             'order_id',
             'price',
             'quantity',
             'inverse',
-            'grid',)
+            'grid',
+            'deal',)
         return levels
 
 
