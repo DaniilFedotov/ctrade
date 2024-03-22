@@ -79,9 +79,8 @@ class DealSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         exit_price = validated_data['exit_price']
-        side = validated_data['side']
         instance.exit_price = exit_price
-        if side == 'long':
+        if instance.side == 'long':
             instance.revenue = round(
                 instance.quantity * (exit_price - instance.entry_price), 2)
         else:
