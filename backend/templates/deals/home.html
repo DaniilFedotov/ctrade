@@ -1,9 +1,52 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}
   Home
 {% endblock title %}
 {% block content %}
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
   <div class="container py-5">
-    <h1>Home</h1>
+    <h1>About</h1>
+    <img src="{% static 'img/graph.jpg' %}"
+         style="width: 1040px; height:424px;"
+         align="center"
+         hspace="100"
+         vspace="15">
+    <p style="font-size: 20px">
+      Ctrade is a trading bot that automatically trades cryptocurrency according to a given algorithm.
+      Currently, only one strategy is available for trading - grid trading.
+    </p>
+    <p style="font-size: 20px">
+      The grid trading algorithm performs well during a period when the token price is in a sideways active trend.
+      The bot arranges a grid of orders according to the settings. When prices move within a given range, orders are
+      executed and profits are made from short-term trades.  To use the bot, you need to create a trading account
+      in the database and a trading grid based on specified parameters.
+    </p>
+    <h2 style="text-decoration: underline">Instructions for creating a grid</h2>
+    <p style="font-size: 20px">
+      A separate grid needs to be created for each token. At the same time, for one token there can be several
+      grids with different parameters. The grid has several parameters - bottom, top, number of levels, deposit
+      and ticker. Bottom and top represent the boundary conditions of the grid, expressed in the price of the token.
+      The number of levels determines the grid structure. With a low number of levels, order size is large and
+      therefore the profit per order is high. But in this case, orders take longer to execute. With a large number
+      of levels, orders are executed much more often, but the order size is smaller, which affects the profit in
+      each transaction. This is true if other parameters are the same. The dependence is demonstrated by the following
+      formulas:
+    </p>
+    <p style="font-size: 20px" align="center">
+      \[ordersize = {deposit \over levels},\]
+      \[profit = {deposit \cdot (top - bottom) \over levels \cdot price \cdot (levels - 1)}.\]
+    </p>
+    <p style="font-size: 20px">
+      The deposit value should not exceed the amount of funds in the exchange account. Top and bottom parameters
+      are selected based on chart analysis. The number of levels must be more than 6 and less than 40. This value
+      can be selected by testing different options. The ticker name consists of the name of the token and the currency
+      for which it is traded. Available tickers can be obtained via Telegram bot. The grid is created via a
+      Telegram bot or via Postman (for advanced users).
+    </p>
+    <h3>Creation via bot</h3>
   </div>
 {% endblock content %}
