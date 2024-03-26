@@ -22,7 +22,8 @@ class Deal(models.Model):
         null=True,
     )
     side = models.CharField(
-        verbose_name='Deal type.'
+        verbose_name='Deal type.',
+        max_length=5,
     )
     quantity = models.FloatField(
         verbose_name='Quantity purchased',
