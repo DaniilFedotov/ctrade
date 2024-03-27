@@ -132,11 +132,50 @@ def get_tickers(update, context):
         text=f'Available tickers:\n{names}')
 
 
-def grids(update, context):
+def get_grids(update, context):
     """Displays a list of available grids or create a new one."""
-    pass
+    command_list = update['message']['text'].split(' ')
+    if len(command_list) == 1:
+        grids = requests.get(f'http://localhost:8000/api/grids/').json()
+        data = ''
+        for grid in grids:
+            data += (grid['id'] + '\n' +
+                     grid['bottom'] + '\n' +
+                     grid['top'] + '\n' +
+                     grid['number_of_levels'] + '\n' +
+                     grid['deposit'] + '\n' +
+                     grid['ticker']['name'] + '\n' +
+                     '---------------' + '\n')
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f'Created grids: \n{data}'
+        )
+    elif len(command_list) == 2:
+        grid_id = command_list[-1]
+        grid = requests.get(f'http://localhost:8000/api/grids/{grid_id}/').json()
+        data = (grid['id'] + '\n' +
+                grid['bottom'] + '\n' +
+                grid['top'] + '\n' +
+                grid['number_of_levels'] + '\n' +
+                grid['deposit'] + '\n' +
+                grid['ticker']['name'])
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f'{data}'
+        )
+    elif len(command_list) == 6:
+        grid = {'bottom': float(command_list[-5]),
+                'top': float(command_list[-4]),
+                'number_of_levels': int(command_list[-3]),
+                'deposit': float(command_list[-2]),
+                'ticker': int(command_list[-1])}
+        requests.post(f'http://localhost:8000/api/grids/', data=grid)
+    else:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text='Wrong command. Read the instructions.')
 
 
-def traders(update, context):
+def get_traders(update, context):
     """Displays a list of available traders or create a new one."""
     pass

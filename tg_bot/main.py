@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from commands import (start_trading, stop_trading, get_revenue,
                       get_daily_revenue, get_bot_id, get_tickers,
-                      grids, traders)
+                      get_grids, get_traders)
 
 
 load_dotenv()
@@ -41,8 +41,8 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('yesterday', get_daily_revenue))
     updater.dispatcher.add_handler(CommandHandler('id', get_bot_id))
     updater.dispatcher.add_handler(CommandHandler('tickers', get_tickers))
-    updater.dispatcher.add_handler(CommandHandler('grids', grids))
-    updater.dispatcher.add_handler(CommandHandler('traders', traders))
+    updater.dispatcher.add_handler(CommandHandler('grids', get_grids))
+    updater.dispatcher.add_handler(CommandHandler('traders', get_traders))
     updater.dispatcher.add_handler(CommandHandler('help', get_help))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, get_help))
     updater.start_polling(poll_interval=1.0)
