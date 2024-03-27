@@ -19,7 +19,17 @@ HELP_TEXT = ('Bot is running. You can use the following commands:\n'
              '/stop x - stop trading bot with id x;\n'
              '/revenue x - get revenue for the last x trades (default - 5);\n'
              '/daily - get revenue for today;\n'
+             '/yesterday - get revenue for yesterday;\n'
              '/id - get the id of a running bots;\n'
+             '/tickers - get available tickets;\n'
+             '/grids - get available grids;\n'
+             '/grid x - get grid from id x;\n'
+             '/grid a b c d e - create a grid with the following parameters:\n'
+             'a - bottom, b - top, c - number of levels, d - deposit, e - ticker id;\n'
+             '/traders - get available traders;\n'
+             '/trader x - get trader from id x;\n'
+             '/trader a b - create a trader with the following parameters:\n'
+             'a - exchange, b - grid;\n'
              '/help - get help message.')
 
 bot = Bot(token=TELEGRAM_TOKEN)

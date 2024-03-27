@@ -126,7 +126,7 @@ def get_tickers(update, context):
     tickers = requests.get(f'http://localhost:8000/api/tickers/').json()
     names = ''
     for ticker in tickers:
-        names += ticker['name'] + '\n'
+        names += 'id:' + ticker['id'] + 'name:' + ticker['name'] + '\n'
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=f'Available tickers:\n{names}')
