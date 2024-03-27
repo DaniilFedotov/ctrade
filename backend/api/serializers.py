@@ -3,7 +3,7 @@ from rest_framework.serializers import (ModelSerializer,
                                         PrimaryKeyRelatedField)
 
 from deals.models import (Deal, Trader, Grid, Level,
-                          Token, Currency, TradingPair)
+                          Token, Currency, Ticker)
 
 
 class TokenSerializer(ModelSerializer):
@@ -21,12 +21,12 @@ class CurrencySerializer(ModelSerializer):
 
 
 class TickerSerializer(ModelSerializer):
-    """Serializer for the trading pair model."""
+    """Serializer for the ticker model."""
     token = TokenSerializer()
     currency = CurrencySerializer()
 
     class Meta:
-        model = TradingPair
+        model = Ticker
         fields = ('id', 'token', 'currency',
                   'price_precision', 'quantity_precision',)
 
