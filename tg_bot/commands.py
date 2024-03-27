@@ -126,7 +126,7 @@ def get_tickers(update, context):
     tickers = requests.get(f'http://localhost:8000/api/tickers/').json()
     names = ''
     for ticker in tickers:
-        names += 'id:' + ticker['id'] + 'name:' + ticker['name'] + '\n'
+        names += f'id: {ticker["id"]} name: {ticker["name"]}\n'
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=f'Available tickers:\n{names}')
@@ -139,25 +139,25 @@ def get_grids(update, context):
         grids = requests.get(f'http://localhost:8000/api/grids/').json()
         data = ''
         for grid in grids:
-            data += ('id:' + grid['id'] + '\n' +
-                     'bottom:' + grid['bottom'] + '\n' +
-                     'top:' + grid['top'] + '\n' +
-                     'number_of_levels:' + grid['number_of_levels'] + '\n' +
-                     'deposit:' + grid['deposit'] + '\n' +
-                     'ticker:' + grid['ticker']['name'] + '\n' +
-                     '---------------' + '\n')
+            data += (f'id: {grid["id"]}\n'
+                     f'bottom: {grid["bottom"]}\n'
+                     f'top: {grid["top"]}\n'
+                     f'number_of_levels: {grid["number_of_levels"]}\n'
+                     f'deposit: {grid["deposit"]}\n'
+                     f'ticker: {grid["ticker"]["name"]}\n'
+                     '---------------\n')
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=f'Created grids: \n{data}')
     elif len(command_list) == 2:
         grid_id = command_list[-1]
         grid = requests.get(f'http://localhost:8000/api/grids/{grid_id}/').json()
-        data = ('id:' + grid['id'] + '\n' +
-                'bottom:' + grid['bottom'] + '\n' +
-                'top:' + grid['top'] + '\n' +
-                'number_of_levels:' + grid['number_of_levels'] + '\n' +
-                'deposit:' + grid['deposit'] + '\n' +
-                'ticker:' + grid['ticker']['name'])
+        data = (f'id: {grid["id"]}\n'
+                f'bottom: {grid["bottom"]}\n'
+                f'top: {grid["top"]}\n'
+                f'number_of_levels: {grid["number_of_levels"]}\n'
+                f'deposit: {grid["deposit"]}\n'
+                f'ticker: {grid["ticker"]["name"]}')
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=f'{data}')
@@ -181,29 +181,29 @@ def get_traders(update, context):
         traders = requests.get(f'http://localhost:8000/api/traders/').json()
         data = ''
         for trader in traders:
-            data += ('id:' + trader['id'] + '\n' +
-                     'creation_date:' + trader['creation_date'] + '\n' +
-                     'working:' + trader['working'] + '\n' +
-                     'initial_deposit:' + trader['initial_deposit'] + '\n' +
-                     'current_deposit:' + trader['current_deposit'] + '\n' +
-                     'market:' + trader['market'] + '\n' +
-                     'exchange:' + trader['exchange'] + '\n' +
-                     'grid:' + trader['grid'] + '\n' +
-                     '---------------' + '\n')
+            data += (f'id: {trader["id"]}\n'
+                     f'creation_date: {trader["creation_date"]}\n'
+                     f'working: {trader["working"]}\n'
+                     f'initial_deposit: {trader["initial_deposit"]}\n'
+                     f'current_deposit: {trader["current_deposit"]}\n'
+                     f'market: {trader["market"]}\n'
+                     f'exchange: {trader["exchange"]}\n'
+                     f'grid: {trader["grid"]}\n'
+                     '---------------\n')
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=f'Created grids: \n{data}')
     elif len(command_list) == 2:
         trader_id = command_list[-1]
         trader = requests.get(f'http://localhost:8000/api/traders/{trader_id}/').json()
-        data = ('id:' + trader['id'] + '\n' +
-                'creation_date:' + trader['creation_date'] + '\n' +
-                'working:' + trader['working'] + '\n' +
-                'initial_deposit:' + trader['initial_deposit'] + '\n' +
-                'current_deposit:' + trader['current_deposit'] + '\n' +
-                'market:' + trader['market'] + '\n' +
-                'exchange:' + trader['exchange'] + '\n' +
-                'grid:' + trader['grid'])
+        data = (f'id: {trader["id"]}\n'
+                f'creation_date: {trader["creation_date"]}\n'
+                f'working: {trader["working"]}\n'
+                f'initial_deposit: {trader["initial_deposit"]}\n'
+                f'current_deposit: {trader["current_deposit"]}\n'
+                f'market: {trader["market"]}\n'
+                f'exchange: {trader["exchange"]}\n'
+                f'grid: {trader["grid"]}')
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=f'{data}')
