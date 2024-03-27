@@ -139,30 +139,28 @@ def get_grids(update, context):
         grids = requests.get(f'http://localhost:8000/api/grids/').json()
         data = ''
         for grid in grids:
-            data += (grid['id'] + '\n' +
-                     grid['bottom'] + '\n' +
-                     grid['top'] + '\n' +
-                     grid['number_of_levels'] + '\n' +
-                     grid['deposit'] + '\n' +
-                     grid['ticker']['name'] + '\n' +
+            data += ('id:' + grid['id'] + '\n' +
+                     'bottom:' + grid['bottom'] + '\n' +
+                     'top:' + grid['top'] + '\n' +
+                     'number_of_levels:' + grid['number_of_levels'] + '\n' +
+                     'deposit:' + grid['deposit'] + '\n' +
+                     'ticker:' + grid['ticker']['name'] + '\n' +
                      '---------------' + '\n')
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f'Created grids: \n{data}'
-        )
+            text=f'Created grids: \n{data}')
     elif len(command_list) == 2:
         grid_id = command_list[-1]
         grid = requests.get(f'http://localhost:8000/api/grids/{grid_id}/').json()
-        data = (grid['id'] + '\n' +
-                grid['bottom'] + '\n' +
-                grid['top'] + '\n' +
-                grid['number_of_levels'] + '\n' +
-                grid['deposit'] + '\n' +
-                grid['ticker']['name'])
+        data = ('id:' + grid['id'] + '\n' +
+                'bottom:' + grid['bottom'] + '\n' +
+                'top:' + grid['top'] + '\n' +
+                'number_of_levels:' + grid['number_of_levels'] + '\n' +
+                'deposit:' + grid['deposit'] + '\n' +
+                'ticker:' + grid['ticker']['name'])
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f'{data}'
-        )
+            text=f'{data}')
     elif len(command_list) == 6:
         grid = {'bottom': float(command_list[-5]),
                 'top': float(command_list[-4]),
@@ -178,4 +176,42 @@ def get_grids(update, context):
 
 def get_traders(update, context):
     """Displays a list of available traders or create a new one."""
-    pass
+    command_list = update['message']['text'].split(' ')
+    if len(command_list) == 1:
+        traders = requests.get(f'http://localhost:8000/api/traders/').json()
+        data = ''
+        for trader in traders:
+            data += ('id:' + trader['id'] + '\n' +
+                     'creation_date:' + trader['creation_date'] + '\n' +
+                     'working:' + trader['working'] + '\n' +
+                     'initial_deposit:' + trader['initial_deposit'] + '\n' +
+                     'current_deposit:' + trader['current_deposit'] + '\n' +
+                     'market:' + trader['market'] + '\n' +
+                     'exchange:' + trader['exchange'] + '\n' +
+                     'grid:' + trader['grid'] + '\n' +
+                     '---------------' + '\n')
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f'Created grids: \n{data}')
+    elif len(command_list) == 2:
+        trader_id = command_list[-1]
+        trader = requests.get(f'http://localhost:8000/api/traders/{trader_id}/').json()
+        data = ('id:' + trader['id'] + '\n' +
+                'creation_date:' + trader['creation_date'] + '\n' +
+                'working:' + trader['working'] + '\n' +
+                'initial_deposit:' + trader['initial_deposit'] + '\n' +
+                'current_deposit:' + trader['current_deposit'] + '\n' +
+                'market:' + trader['market'] + '\n' +
+                'exchange:' + trader['exchange'] + '\n' +
+                'grid:' + trader['grid'])
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f'{data}')
+    elif len(command_list) == 3:
+        trader = {'exchange': command_list[-2],
+                  'grid': int(command_list[-1])}
+        requests.post(f'http://localhost:8000/api/traders/', data=trader)
+    else:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text='Wrong command. Read the instructions.')
