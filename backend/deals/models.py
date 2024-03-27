@@ -16,7 +16,7 @@ class Deal(models.Model):
         default=False,
     )
     ticker = models.ForeignKey(
-        'TradingPair',
+        'Ticker',
         verbose_name='Ticker of the coin being traded.',
         on_delete=models.SET_NULL,
         null=True,
@@ -140,7 +140,7 @@ class Grid(models.Model):
         verbose_name='Deposit for strategy.'
     )
     ticker = models.ForeignKey(
-        'TradingPair',
+        'Ticker',
         verbose_name='Ticker of the coin being traded.',
         on_delete=models.CASCADE,
     )
@@ -235,7 +235,7 @@ class Currency(models.Model):
         return self.name
 
 
-class TradingPair(models.Model):
+class Ticker(models.Model):
     """Model for are trading pair."""
     id = models.AutoField(
         primary_key=True,
