@@ -24,11 +24,17 @@ class TickerSerializer(ModelSerializer):
     """Serializer for the ticker model."""
     token = TokenSerializer()
     currency = CurrencySerializer()
+    name = SerializerMethodField()
 
     class Meta:
         model = Ticker
         fields = ('id', 'token', 'currency',
-                  'price_precision', 'quantity_precision',)
+                  'price_precision', 'quantity_precision',
+                  'name')
+
+    def get_name(self, obj):
+        name = obj.token.name + obj.currency.name
+        return name
 
 
 class LevelSerializer(ModelSerializer):
