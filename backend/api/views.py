@@ -2,8 +2,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from deals.models import Deal, Trader, Grid, Level, Ticker
 from .serializers import (DealSerializer, TraderSerializer,
-                          GridSerializer, LevelSerializer,
-                          TickerSerializer)
+                          GridSerializer, CreateGridSerializer,
+                          LevelSerializer, TickerSerializer)
 
 
 class DealViewSet(ModelViewSet):
@@ -21,7 +21,12 @@ class TraderViewSet(ModelViewSet):
 class GridViewSet(ModelViewSet):
     """Viewset for the grid model."""
     queryset = Grid.objects.all()
-    serializer_class = GridSerializer
+
+    def get_serializer_class(self):
+        """Gets the required serializer."""
+        if self.request.method == 'POST':
+            return CreateGridSerializer
+        return GridSerializer
 
 
 class LevelViewSet(ModelViewSet):

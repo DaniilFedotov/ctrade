@@ -74,6 +74,16 @@ class GridSerializer(ModelSerializer):
         return levels
 
 
+class CreateGridSerializer(ModelSerializer):
+    """Serializer to create a grid object."""
+    ticker = PrimaryKeyRelatedField(queryset=Ticker.objects.all())
+
+    class Meta:
+        model = Grid
+        fields = ('id', 'bottom', 'top', 'number_of_levels',
+                  'deposit', 'ticker')
+
+
 class DealSerializer(ModelSerializer):
     """Serializer for the deal model."""
 
