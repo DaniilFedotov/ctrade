@@ -4,7 +4,7 @@ import requests
 
 
 API_URL = 'http://backend:8000/api'
-MSG_MAX_SIZE_PC = 5
+MSG_MAX_SIZE_PC = 10
 
 
 def start_trading(update, context):
@@ -217,7 +217,7 @@ def get_traders(update, context):
         trader_info = requests.post(f'{API_URL}/traders/', data=trader).json()
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f'Trader created. id: {trader_info}.')
+            text=f'Trader created. id: {trader_info["id"]}.')
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
