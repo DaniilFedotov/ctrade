@@ -167,7 +167,10 @@ def get_grids(update, context):
                 'number_of_levels': int(command_list[-3]),
                 'deposit': float(command_list[-2]),
                 'ticker': int(command_list[-1])}
-        requests.post(f'http://localhost:8000/api/grids/', data=grid)
+        grid_info = requests.post(f'http://localhost:8000/api/grids/', data=grid).json()
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f'Grid created. id: {grid_info["id"]}.')
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -210,7 +213,10 @@ def get_traders(update, context):
     elif len(command_list) == 3:
         trader = {'exchange': command_list[-2],
                   'grid': int(command_list[-1])}
-        requests.post(f'http://localhost:8000/api/traders/', data=trader)
+        trader_info = requests.post(f'http://localhost:8000/api/traders/', data=trader).json()
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f'Trader created. id: {trader_info["id"]}.')
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
