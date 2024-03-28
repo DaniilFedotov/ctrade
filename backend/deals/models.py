@@ -161,6 +161,9 @@ class Grid(models.Model):
         default=None,
     )
 
+    class Meta:
+        ordering = ('-id',)
+
 
 class Level(models.Model):
     """Model for a level array."""
