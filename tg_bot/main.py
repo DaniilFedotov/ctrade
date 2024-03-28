@@ -1,8 +1,8 @@
 import os
 
+from dotenv import load_dotenv
 from telegram import Bot
 from telegram.ext import Updater, Filters, MessageHandler, CommandHandler
-from dotenv import load_dotenv
 
 from commands import (start_trading, stop_trading, get_revenue,
                       get_daily_revenue, get_bot_id, get_tickers,

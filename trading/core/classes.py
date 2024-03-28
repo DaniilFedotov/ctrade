@@ -1,5 +1,5 @@
-import sys
 import logging
+import sys
 from decimal import Decimal, ROUND_FLOOR
 
 from exchange import binance, bybit

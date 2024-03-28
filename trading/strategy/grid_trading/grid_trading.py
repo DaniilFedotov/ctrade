@@ -1,7 +1,7 @@
-import sys
 import logging
-import time
 import requests
+import sys
+import time
 
 
 CHECK_TIME_SEC = 60

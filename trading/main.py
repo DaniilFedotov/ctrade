@@ -1,7 +1,7 @@
-import sys
 import logging
-import time
 import requests
+import sys
+import time
 
 from core import classes
 from strategy.grid_trading import grid_trading
