@@ -116,4 +116,13 @@ class TraderSerializer(ModelSerializer):
         fields = ('id', 'creation_date', 'working', 'initial_deposit',
                   'current_deposit', 'revenue', 'market', 'exchange',
                   'grid', 'lock',)
-        read_only_fields = ('id',)
+
+
+class CreateTraderSerializer(ModelSerializer):
+    """Serializer to create a trader object."""
+    grid = PrimaryKeyRelatedField(queryset=Grid.objects.all())
+
+    class Meta:
+        model = Trader
+        fields = ('id', 'creation_date', 'working', 'market',
+                  'exchange', 'grid',)
