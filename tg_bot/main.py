@@ -4,9 +4,9 @@ from dotenv import load_dotenv
 from telegram import Bot
 from telegram.ext import Updater, Filters, MessageHandler, CommandHandler
 
-from commands import (start_trading, stop_trading, get_revenue,
-                      get_daily_revenue, get_bot_id, get_tickers,
-                      get_grids, get_traders)
+from commands import (MSG_MAX_SIZE_PC, start_trading, stop_trading,
+                      get_revenue, get_daily_revenue, get_bot_id,
+                      get_tickers, get_grids, get_traders)
 
 
 load_dotenv()
@@ -22,12 +22,12 @@ HELP_TEXT = ('Bot is running. You can use the following commands:\n'
              '/yesterday - get revenue for yesterday;\n'
              '/id - get the id of a running bot;\n'
              '/tickers - get available tickets;\n'
-             '/grids - get available grids;\n'
+             f'/grids - get available grids (last {MSG_MAX_SIZE_PC});\n'
              '/grids x - get grid from id x;\n'
              '/grids a b c d e - create a grid with the following parameters:\n'
              'a - bottom, b - top, c - number of levels (from 6 to 40), '
              'd - deposit, e - ticker id;\n'
-             '/traders - get available traders;\n'
+             f'/traders - get available traders (last {MSG_MAX_SIZE_PC});\n'
              '/traders x - get trader from id x;\n'
              '/traders a b - create a trader with the following parameters:\n'
              'a - exchange name (for example - bybit), b - grid id;\n'
