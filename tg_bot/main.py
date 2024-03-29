@@ -27,9 +27,9 @@ HELP_TEXT = ('Bot is running. You can use the following commands:\n'
              '/grids a b c d e - create a grid with the following parameters:\n'
              'a - bottom, b - top, c - number of levels (from 6 to 40), '
              'd - deposit, e - ticker id;\n'
-             f'/traders - get available traders (last {MSG_MAX_SIZE_PC});\n'
-             '/traders x - get trader from id x;\n'
-             '/traders a b - create a trader with the following parameters:\n'
+             f'/traders - get available trading accounts (last {MSG_MAX_SIZE_PC});\n'
+             '/traders x - get trading account from id x;\n'
+             '/traders a b - create a trading account with the following parameters:\n'
              'a - exchange name (for example - bybit), b - grid id;\n'
              '/help - get help message.')
 
