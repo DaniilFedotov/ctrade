@@ -44,10 +44,10 @@
       The deposit value should not exceed the amount of funds in the exchange account. Top and bottom parameters
       are selected based on chart analysis. The number of levels must be more than 6 and less than 40. This value
       can be selected by testing different options. The ticker name consists of the name of the token and the currency
-      for which it is traded. Available tickers can be obtained via Telegram bot. The grid is created via a
-      Telegram bot or via Postman (for advanced users).
+      for which it is traded. Available tickers can be obtained via Telegram bot. The trading grid is also created
+      through a Telegram bot.
     </p>
-    <h3>Creation via bot</h3>
+    <h3>Creation via Telegram bot</h3>
     <p style="font-size: 20px">
       First of all, it is recommended to look at the loaded grids. This can be done with the /grids command.
       If a suitable grid already exists, then the trading is launched with the command /start x, where 'x' is the id
@@ -73,6 +73,18 @@
     <p style="font-size: 20px">
       To control the launch of a trading bot, it is recommended to check the presence of created orders on the
       exchange account.
+    </p>
+    <h3>Trading bot control</h3>
+    <p style="font-size: 20px">
+      Control over the operation of the trading bot can also be done through the Telegram bot. Trading bot
+      statistics can be obtained through the following command - /traders x, where 'x' is the id of the
+      trading account. This id of a running trading bot can be obtained using the /id command.
+    </p>
+    <p style="font-size: 20px">
+      You can use the following commands to get information about your income: /daily - get information about revenue
+      for the current day, /yesterday - get information about revenue for the previous day, /revenue x - get
+      information about revenue for last 'x' transactions. The value of 'x' can be omitted, in which case the default
+      value will be 5.
     </p>
   </div>
 {% endblock content %}
