@@ -58,10 +58,10 @@ BINANCE_API_KEY=XYZ  # API key for Binance exchange.
 BINANCE_SECRET_KEY=XYZ  # Secret key for Binance exchange.
 ```
 You can generate secret key and add your server IP in ALLOWED_HOSTS. 
-You can set up a bot account via @BotFather.
+You can set up a Telegram bot account via @BotFather.
 
 To use the trading bot you need to deploy containers. To do this you need
-to download Docker. For Linux you can use the following commands.
+to download Docker. For Linux, you can use the following commands.
 
 Installing console utility curl:
 ```sh
@@ -84,28 +84,46 @@ After installing Docker, you can start a container network with the command:
 ```sh
 sudo docker compose up
 ```
-To get acquainted with the wev interface, you can fill the database with 
-test data. To do this, enter the command in a separate terminal:
+After launching the container network, you need to import the initial settings into the database.
+To do this, enter the command in a separate terminal:
 ```sh
-sudo docker exec backend python manage.py testimport
+sudo docker exec backend python manage.py importsettings
 ```
 
-The following pages are currently available: Deals, Traders.
+You can open the web interface at http://localhost:8000/.
 
-You can open the web interface at http://localhost:8000/
+The following pages are currently available: Home, Deals, Traders.
+The Home page contains information about the strategy and instructions for setting up a trading bot.
+Transactions opened during trading will be posted on the Deals page. Statistics of created trading
+bots will be available in the Traders page.
+
+Telegram bot is used to configure a trading bot, manage it and obtain trading statistics.
 
 The following commands are available for the Telegram bot:
 * `/start x` - start existing trading bot with id x;
 * `/stop x` - stop trading bot with id x;
 * `/revenue x` - get revenue for the last x trades (default - 5);
 * `/daily` - get revenue for today;
+* `/yesterday` - get revenue for yesterday;
 * `/id` - get the id of a running bot;
+* `/tickers` - get available tickers;
+* `/grids` - get available grids (last created);
+* `/grids x` - get grid from id x;
+* `/grids a b c d e` - create a grid with the following parameters:
+   
+  a - bottom, b - top, c - number of levels (from 6 to 40), d - deposit, e - ticker id;
+* `/traders` - get available trading accounts (last created);
+* `/traders x` - get trading account from id x;
+* `/traders a b` - create a trading account with the following parameters:
+
+  a - exchange name (for example - bybit), b - grid id;
 * `/help` - get help message.
 
 ### What is working at the moment
-The web interface is now fully functional. The Telegram bot has most of the 
-commands implemented, but creating a trading bot is not yet available.
-Active work is underway on the trading bot module.
 
-Detailed instructions for creating a trading bot via Telegram bot and setting up
-a strategy will be created after completing work on the trading bot module.
+The web interface is now fully functional. The Telegram bot is also fully functional. 
+Currently, only the grid trading strategy works. It is planned to implement other strategies in
+the future.
+
+Work is underway to optimize the code. A module for analyzing the volatility of cryptocurrencies
+is being developed. He will help you choose a coin for trading using a bot.
