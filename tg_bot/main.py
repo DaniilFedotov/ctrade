@@ -5,7 +5,7 @@ from telegram import Bot
 from telegram.ext import Updater, Filters, MessageHandler, CommandHandler
 
 from commands import (MSG_MAX_SIZE_PC, start_trading, stop_trading,
-                      get_revenue, get_daily_revenue, get_bot_id,
+                      get_revenue, get_daily, get_bot_id,
                       get_tickers, get_grids, get_traders)
 
 
@@ -24,12 +24,15 @@ HELP_TEXT = ('Bot is running. You can use the following commands:\n'
              '/tickers - get available tickets;\n'
              f'/grids - get available grids (last {MSG_MAX_SIZE_PC});\n'
              '/grids x - get grid from id x;\n'
-             '/grids a b c d e - create a grid with the following parameters:\n'
+             '/grids a b c d e - create a grid with the '
+             'following parameters:\n'
              'a - bottom, b - top, c - number of levels (from 6 to 40), '
              'd - deposit, e - ticker id;\n'
-             f'/traders - get available trading accounts (last {MSG_MAX_SIZE_PC});\n'
+             f'/traders - get available trading accounts '
+             f'(last {MSG_MAX_SIZE_PC});\n'
              '/traders x - get trading account from id x;\n'
-             '/traders a b - create a trading account with the following parameters:\n'
+             '/traders a b - create a trading account with the '
+             'following parameters:\n'
              'a - exchange name (for example - bybit), b - grid id;\n'
              '/help - get help message.')
 
@@ -48,8 +51,8 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('start', start_trading))
     updater.dispatcher.add_handler(CommandHandler('stop', stop_trading))
     updater.dispatcher.add_handler(CommandHandler('revenue', get_revenue))
-    updater.dispatcher.add_handler(CommandHandler('daily', get_daily_revenue))
-    updater.dispatcher.add_handler(CommandHandler('yesterday', get_daily_revenue))
+    updater.dispatcher.add_handler(CommandHandler('daily', get_daily))
+    updater.dispatcher.add_handler(CommandHandler('yesterday', get_daily))
     updater.dispatcher.add_handler(CommandHandler('id', get_bot_id))
     updater.dispatcher.add_handler(CommandHandler('tickers', get_tickers))
     updater.dispatcher.add_handler(CommandHandler('grids', get_grids))

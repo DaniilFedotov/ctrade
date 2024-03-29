@@ -83,8 +83,8 @@ def get_revenue(update, context):
         text=f'Revenue for the last {num_of_deals} trades: {revenue} USD.')
 
 
-def get_daily_revenue(update, context):
-    """Calculates revenue for today's transactions."""
+def get_daily(update, context):
+    """Calculates revenue for today's or yesterday's transactions."""
     deals = requests.get(f'{API_URL}/deals/').json()
     today = datetime.datetime.today()
     revenue = 0
