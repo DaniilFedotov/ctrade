@@ -48,5 +48,31 @@
       Telegram bot or via Postman (for advanced users).
     </p>
     <h3>Creation via bot</h3>
+    <p style="font-size: 20px">
+      First of all, it is recommended to look at the loaded grids. This can be done with the /grids command.
+      If a suitable grid already exists, then the trading is launched with the command /start x, where 'x' is the id
+      of the trading account (the same as the grid id). If no grid fits, you can create one.
+    </p>
+    <p style="font-size: 20px">
+      To do this, you need to get a list of available tickers using the /tickers command. You need to find
+      the id of the ticker you are interested in. You will need it when creating the grid. Next, a grid with
+      the necessary parameters is created with the command /grids a b c d e, where 'a' is the bottom of the grid,
+      'b' is the top of the grid, 'c' is the number of levels, 'e' is the deposit on the grid, 'd' is the
+      previously obtained ticker id. In response, the Telegram bot will return the id of the created grid.
+    </p>
+    <p style="font-size: 20px">
+      After this, you need to create a trading account for the created grid. This is done with the command
+      /traders a b, where 'a' is the name of the exchange on which the trading bot will be launched (at the moment
+      only bybit is supported), 'b' is the id of the created grid. In response, the Telegram bot will return the id
+      of the created trading account.
+    </p>
+    <p style="font-size: 20px">
+      The following commands are available for the trading bot: /start x - start the bot, /stop x - stop the bot,
+      /traders x - statistics of the trading bot, where 'x' is the id of the created trading account.
+    </p>
+    <p style="font-size: 20px">
+      To control the launch of a trading bot, it is recommended to check the presence of created orders on the
+      exchange account.
+    </p>
   </div>
 {% endblock content %}
