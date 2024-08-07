@@ -10,14 +10,14 @@ class TokenSerializer(ModelSerializer):
     """Serializer for the token model."""
     class Meta:
         model = Token
-        fields = ('id', 'name',)
+        fields = ("id", "name")
 
 
 class CurrencySerializer(ModelSerializer):
     """Serializer for the currency model."""
     class Meta:
         model = Currency
-        fields = ('id', 'name',)
+        fields = ("id", "name")
 
 
 class TickerSerializer(ModelSerializer):
@@ -28,13 +28,12 @@ class TickerSerializer(ModelSerializer):
 
     class Meta:
         model = Ticker
-        fields = ('id', 'token', 'currency',
-                  'price_precision', 'quantity_precision',
-                  'name')
+        fields = ("id", "token", "currency",
+                  "price_precision", "quantity_precision",
+                  "name")
 
     def get_name(self, obj):
-        name = obj.token.name + obj.currency.name
-        return name
+        return obj.token.name + obj.currency.name
 
 
 class LevelSerializer(ModelSerializer):
@@ -46,8 +45,8 @@ class LevelSerializer(ModelSerializer):
 
     class Meta:
         model = Level
-        fields = ('id', 'side', 'order_id', 'price',
-                  'quantity', 'inverse', 'grid', 'deal',)
+        fields = ("id", "side", "order_id", "price",
+                  "quantity", "inverse", "grid", "deal")
 
 
 class GridSerializer(ModelSerializer):
@@ -57,20 +56,20 @@ class GridSerializer(ModelSerializer):
 
     class Meta:
         model = Grid
-        fields = ('id', 'bottom', 'top', 'number_of_levels',
-                  'deposit', 'ticker', 'installed', 'step',
-                  'order_size', 'levels',)
+        fields = ("id", "bottom", "top", "number_of_levels",
+                  "deposit", "ticker", "installed", "step",
+                  "order_size", "levels")
 
     def get_levels(self, obj):
         levels = obj.levels.values(
-            'id',
-            'side',
-            'order_id',
-            'price',
-            'quantity',
-            'inverse',
-            'grid',
-            'deal',)
+            "id",
+            "side",
+            "order_id",
+            "price",
+            "quantity",
+            "inverse",
+            "grid",
+            "deal")
         return levels
 
 
@@ -80,8 +79,8 @@ class CreateGridSerializer(ModelSerializer):
 
     class Meta:
         model = Grid
-        fields = ('id', 'bottom', 'top', 'number_of_levels',
-                  'deposit', 'ticker')
+        fields = ("id", "bottom", "top", "number_of_levels",
+                  "deposit", "ticker")
 
 
 class DealSerializer(ModelSerializer):
@@ -89,14 +88,14 @@ class DealSerializer(ModelSerializer):
 
     class Meta:
         model = Deal
-        fields = ('id', 'opening_date', 'closed', 'ticker',
-                  'side', 'quantity', 'entry_price', 'exit_price',
-                  'revenue', 'trader',)
+        fields = ("id", "opening_date", "closed", "ticker",
+                  "side", "quantity", "entry_price", "exit_price",
+                  "revenue", "trader")
 
     def update(self, instance, validated_data):
-        exit_price = validated_data['exit_price']
+        exit_price = validated_data["exit_price"]
         instance.exit_price = exit_price
-        if instance.side == 'long':
+        if instance.side == "long":
             instance.revenue = round(
                 instance.quantity * (exit_price - instance.entry_price), 2)
         else:
@@ -113,9 +112,9 @@ class TraderSerializer(ModelSerializer):
 
     class Meta:
         model = Trader
-        fields = ('id', 'creation_date', 'working', 'initial_deposit',
-                  'current_deposit', 'revenue', 'market', 'exchange',
-                  'grid', 'lock',)
+        fields = ("id", "creation_date", "working", "initial_deposit",
+                  "current_deposit", "revenue", "market", "exchange",
+                  "grid", "lock")
 
 
 class CreateTraderSerializer(ModelSerializer):
@@ -124,5 +123,5 @@ class CreateTraderSerializer(ModelSerializer):
 
     class Meta:
         model = Trader
-        fields = ('id', 'creation_date', 'working', 'market',
-                  'exchange', 'grid',)
+        fields = ("id", "creation_date", "working", "market",
+                  "exchange", "grid",)

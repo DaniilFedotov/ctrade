@@ -19,7 +19,7 @@ class TraderViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         """Gets the required serializer."""
-        if self.request.method == 'POST':
+        if self.request.method == "POST":
             return CreateTraderSerializer
         return TraderSerializer
 
@@ -30,7 +30,7 @@ class GridViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         """Gets the required serializer."""
-        if self.request.method == 'POST':
+        if self.request.method == "POST":
             return CreateGridSerializer
         return GridSerializer
 
