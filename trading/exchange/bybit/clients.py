@@ -1,6 +1,6 @@
 from pybit.unified_trading import HTTP
 
-from ...config import BYBIT_API_KEY, BYBIT_SECRET_KEY
+from config import BYBIT_API_KEY, BYBIT_SECRET_KEY
 
 
 session = HTTP(
