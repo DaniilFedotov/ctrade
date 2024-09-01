@@ -12,6 +12,7 @@ CHECK_TIME_SEC = os.getenv("CHECK_TIME_SEC")
 SAFETY_FACTOR = os.getenv("SAFETY_FACTOR")
 SLEEP_TIME_SEC = os.getenv("SLEEP_TIME_SEC")
 MINIMUM_ORDER_SIZE = os.getenv("MINIMUM_ORDER_SIZE")
+WAITING_TIME_SEC = os.getenv("WAITING_TIME_SEC")
 
 api_requests_mapping = {
     "traders": "/api/traders",
