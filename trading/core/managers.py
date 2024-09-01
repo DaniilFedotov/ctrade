@@ -4,204 +4,219 @@ from config import BACKEND_URL, api_requests_mapping
 
 
 class BaseManager:
-    def get_objects(self, path: str):
+    @staticmethod
+    def get_objects(path: str):
         return requests.get(
             url=f"{BACKEND_URL}{path}"
         ).json()
 
-    def get_object(self, path: str, object_id: str):
+    @staticmethod
+    def get_object(path: str, object_id: str):
         return requests.get(
             url=f"{BACKEND_URL}{path}/{object_id}"
         ).json()
 
-    def create_object(self, path: str, object_data: dict):
+    @staticmethod
+    def create_object(path: str, object_data: dict):
         return requests.post(
             url=f"{BACKEND_URL}{path}",
             data=object_data
         ).json()
 
-    def update_object(self, path: str, object_id: str, object_data: dict):
+    @staticmethod
+    def update_object(path: str, object_id: str, object_data: dict):
         return requests.patch(
             url=f"{BACKEND_URL}{path}/{object_id}",
             data=object_data
         ).json()
 
-    def delete_object(self, path: str, object_id: str):
+    @staticmethod
+    def delete_object(path: str, object_id: str):
         return requests.delete(
             url=f"{BACKEND_URL}{path}/{object_id}"
         ).json()
 
 
 class DealManager(BaseManager):
-    def __init__(self):
-        self.path = api_requests_mapping["deals"]
-
-    def get_deals(self):
+    @staticmethod
+    def get_deals():
         return super().get_objects(
-            path=self.path
+            path=api_requests_mapping["deals"]
         )
 
-    def get_deal(self, deal_id: str):
+    @staticmethod
+    def get_deal(deal_id: str):
         return super().get_object(
-            path=self.path,
+            path=api_requests_mapping["deals"],
             object_id=deal_id
         )
 
-    def create_deal(self, deal_data: dict):
+    @staticmethod
+    def create_deal(deal_data: dict):
         return super().create_object(
-            path=self.path,
+            path=api_requests_mapping["deals"],
             object_data=deal_data
         )
 
-    def update_deal(self, deal_id: str, deal_data: dict):
+    @staticmethod
+    def update_deal(deal_id: str, deal_data: dict):
         return super().update_object(
-            path=self.path,
+            path=api_requests_mapping["deals"],
             object_id=deal_id,
             object_data=deal_data
         )
 
-    def delete_deal(self, deal_id: str):
+    @staticmethod
+    def delete_deal(deal_id: str):
         return super().delete_object(
-            path=self.path,
+            path=api_requests_mapping["deals"],
             object_id=deal_id
         )
 
 
 class GridManager(BaseManager):
-    def __init__(self):
-        self.path = api_requests_mapping["grids"]
-
-    def get_grids(self):
+    @staticmethod
+    def get_grids():
         return super().get_objects(
-            path=self.path
+            path=api_requests_mapping["grids"]
         )
 
-    def get_grid(self, grid_id: str):
+    @staticmethod
+    def get_grid(grid_id: str):
         return super().get_object(
-            path=self.path,
+            path=api_requests_mapping["grids"],
             object_id=grid_id
         )
 
-    def create_grid(self, grid_data: dict):
+    @staticmethod
+    def create_grid(grid_data: dict):
         return super().create_object(
-            path=self.path,
+            path=api_requests_mapping["grids"],
             object_data=grid_data
         )
 
-    def update_grid(self, grid_id: str, grid_data: dict):
+    @staticmethod
+    def update_grid(grid_id: str, grid_data: dict):
         return super().update_object(
-            path=self.path,
+            path=api_requests_mapping["grids"],
             object_id=grid_id,
             object_data=grid_data
         )
 
-    def delete_grid(self, grid_id: str):
+    @staticmethod
+    def delete_grid(grid_id: str):
         return super().delete_object(
-            path=self.path,
+            path=api_requests_mapping["grids"],
             object_id=grid_id
         )
 
 
 class LevelManager(BaseManager):
-    def __init__(self):
-        self.path = api_requests_mapping["levels"]
-
-    def get_levels(self):
+    @staticmethod
+    def get_levels():
         return super().get_objects(
-            path=self.path
+            path=api_requests_mapping["levels"]
         )
 
-    def get_level(self, level_id: str):
+    @staticmethod
+    def get_level(level_id: str):
         return super().get_object(
-            path=self.path,
+            path=api_requests_mapping["levels"],
             object_id=level_id
         )
 
-    def create_level(self, level_data: dict):
+    @staticmethod
+    def create_level(level_data: dict):
         return super().create_object(
-            path=self.path,
+            path=api_requests_mapping["levels"],
             object_data=level_data
         )
 
-    def update_level(self, level_id: str, level_data: dict):
+    @staticmethod
+    def update_level(level_id: str, level_data: dict):
         return super().update_object(
-            path=self.path,
+            path=api_requests_mapping["levels"],
             object_id=level_id,
             object_data=level_data
         )
 
-    def delete_level(self, level_id: str):
+    @staticmethod
+    def delete_level(level_id: str):
         return super().delete_object(
-            path=self.path,
+            path=api_requests_mapping["levels"],
             object_id=level_id
         )
 
 
 class TickerManager(BaseManager):
-    def __init__(self):
-        self.path = api_requests_mapping["tickers"]
-
-    def get_tickers(self):
+    @staticmethod
+    def get_tickers():
         return super().get_objects(
-            path=self.path
+            path=api_requests_mapping["tickers"]
         )
 
-    def get_ticker(self, ticker_id: str):
+    @staticmethod
+    def get_ticker(ticker_id: str):
         return super().get_object(
-            path=self.path,
+            path=api_requests_mapping["tickers"],
             object_id=ticker_id
         )
 
-    def create_ticker(self, ticker_data: dict):
+    @staticmethod
+    def create_ticker(ticker_data: dict):
         return super().create_object(
-            path=self.path,
+            path=api_requests_mapping["tickers"],
             object_data=ticker_data
         )
 
-    def update_ticker(self, ticker_id: str, ticker_data: dict):
+    @staticmethod
+    def update_ticker(ticker_id: str, ticker_data: dict):
         return super().update_object(
-            path=self.path,
+            path=api_requests_mapping["tickers"],
             object_id=ticker_id,
             object_data=ticker_data
         )
 
-    def delete_ticker(self, ticker_id: str):
+    @staticmethod
+    def delete_ticker(ticker_id: str):
         return super().delete_object(
-            path=self.path,
+            path=api_requests_mapping["tickers"],
             object_id=ticker_id
         )
 
 
 class TraderManager(BaseManager):
-    def __init__(self):
-        self.path = api_requests_mapping["traders"]
-
-    def get_traders(self):
+    @staticmethod
+    def get_traders():
         return super().get_objects(
-            path=self.path
+            path=api_requests_mapping["traders"]
         )
 
-    def get_trader(self, trader_id: str):
+    @staticmethod
+    def get_trader(trader_id: str):
         return super().get_object(
-            path=self.path,
+            path=api_requests_mapping["traders"],
             object_id=trader_id
         )
 
-    def create_trader(self, trader_data: dict):
+    @staticmethod
+    def create_trader(trader_data: dict):
         return super().create_object(
-            path=self.path,
+            path=api_requests_mapping["traders"],
             object_data=trader_data
         )
 
-    def update_trader(self, trader_id: str, trader_data: dict):
+    @staticmethod
+    def update_trader(trader_id: str, trader_data: dict):
         return super().update_object(
-            path=self.path,
+            path=api_requests_mapping["traders"],
             object_id=trader_id,
             object_data=trader_data
         )
 
-    def delete_trader(self, trader_id: str):
+    @staticmethod
+    def delete_trader(trader_id: str):
         return super().delete_object(
-            path=self.path,
+            path=api_requests_mapping["traders"],
             object_id=trader_id
         )
