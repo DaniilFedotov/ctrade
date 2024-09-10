@@ -1,26 +1,27 @@
 import logging
 import time
 
-import requests
-
 from config import CHECK_TIME_SEC, SAFETY_FACTOR, MINIMUM_ORDER_SIZE, BACKEND_URL
+from core.classes import TradingBot
+from core.managers import DealManager, LevelManager, TraderManager
+from strategy.grid_trading.utils import finish_trading, install_grid, update_state
 
 
 logger = logging.getLogger(__name__)
 
 
-def trading(trading_bot):
+def trading(trading_bot: TradingBot):
     """Main trading function."""
     logger.debug("Start trading")
-    trader = requests.get(
-        f"{BACKEND_URL}/api/traders/{trading_bot.trader_id}/"
-    ).json()
+    trader = TraderManager.get_trader(
+        trader_id=trading_bot.trader_id
+    )
     if not trader["initial_deposit"]:
         logger.debug("Get initial_deposit")
         balance = trading_bot.get_balance()
-        requests.patch(
-            url=f"{BACKEND_URL}/api/traders/{trading_bot.trader_id}/",
-            data={
+        TraderManager.update_trader(
+            trader_id=trading_bot.trader_id,
+            trader_data={
                 "initial_deposit": balance,
                 "current_deposit": balance
             }
@@ -28,20 +29,21 @@ def trading(trading_bot):
     grid_installed = trader["grid"]["installed"]
     if not grid_installed:
         logger.debug("Grid not installed")
-        grid_installed = install_grid(trading_bot)
+    else:
+        logger.debug("Grid already installed")
+    grid_installed = install_grid(trading_bot)
     while grid_installed:
         logger.debug("Start checking orders")
-        trader = requests.get(
-            url=f"{BACKEND_URL}/api/traders/{trading_bot.trader_id}/"
-        ).json()
+        trader = TraderManager.get_trader(
+            trader_id=trading_bot.trader_id
+        )
         if not trader["working"]:
             finish_trading(trading_bot)
             break
         cur_grid = trader["grid"]
-        levels = trader["grid"]["levels"]
-        for level in levels:
+        cur_levels = trader["grid"]["levels"]
+        for level in cur_levels:
             order_info = trading_bot.get_order(
-                category="spot",  # D
                 order_id=level["order_id"],
                 closed=True
             )
@@ -51,41 +53,38 @@ def trading(trading_bot):
                     logger.debug("Find filled order")
                     if level["inverse"]:
                         logger.debug("Deal editing")
-                        requests.patch(
-                            url=f"{BACKEND_URL}/api/deals/{level['deal']}/",
-                            data={"exit_price": level["price"]}
+                        DealManager.update_deal(
+                            deal_id=level["deal"],
+                            deal_data={"exit_price": level["price"]}
                         )
                         level["deal"] = ""
                     else:
                         logger.debug("Deal creating")
-                        ticker = trading_bot.grid_settings["ticker"]["id"]
-                        side = "long" if level["side"] == "buy" else "short"
-                        deal = {
-                            "ticker": ticker,
-                            "side": side,
-                            "quantity": level["quantity"],
-                            "entry_price": level["price"],
-                            "trader": trading_bot.trader_id
-                        }
-                        deal_info = requests.post(
-                            url=f"{BACKEND_URL}/api/deals/",
-                            data=deal
-                        ).json()
-                        level["deal"] = deal_info["id"]
-                    next_price = trading_bot.value_formatting(
-                        level["price"] - cur_grid["step"]
-                        if level["side"] == "sell"
-                        else level["price"] + cur_grid["step"], "price")
-                    next_quantity = trading_bot.value_formatting(
-                        cur_grid["order_size"] / next_price,
-                        "quantity"
+                        ticker_id = trading_bot.grid["ticker"]["id"]
+                        deal = DealManager.create_deal(
+                            deal_data={
+                                "ticker": ticker_id,
+                                "side": "long" if level["side"] == "buy" else "short",
+                                "quantity": level["quantity"],
+                                "entry_price": level["price"],
+                                "trader": trading_bot.trader_id
+                            }
+                        )
+                        level["deal"] = deal["id"]
+                    next_price = trading_bot.trading_pair.value_formatting(
+                        value=level["price"] - cur_grid["step"] if level["side"] == "sell" else level["price"] + cur_grid["step"],
+                        parameter="price"
+                    )
+                    next_quantity = trading_bot.trading_pair.value_formatting(
+                        value=cur_grid["order_size"] / next_price,
+                        parameter="quantity"
                     )
                     next_level = {
                         "side": "buy" if level["side"] == "sell" else "sell",
                         "order_id": None,
                         "price": next_price,
                         "quantity": next_quantity,
-                        "inverse": False if level["inverse"] else True,
+                        "inverse": not level["inverse"],
                         "deal": level["deal"]
                     }
                     order_id = trading_bot.create_limit_order(
@@ -94,185 +93,9 @@ def trading(trading_bot):
                         price=next_level["price"]
                     )
                     next_level["order_id"] = order_id
-                    requests.patch(
-                        url=f"{BACKEND_URL}/api/levels/{level['id']}/",
-                        data=next_level
+                    LevelManager.update_level(
+                        level_id=level["id"],
+                        level_data=next_level
                     )
-                    update_deposit(trader, trading_bot)
+                    trading_bot = update_state(trading_bot)
         time.sleep(CHECK_TIME_SEC)
-
-
-def install_grid(bot):
-    """Places trading grid orders."""
-    logger.debug("Create grid")
-    balance = bot.get_balance()
-    grid = bot.grid_settings
-    requests.patch(
-        url=f"{BACKEND_URL}/api/traders/{bot.trader_id}/",
-        data={"lock": balance - grid["deposit"]}
-    )
-    step = bot.value_formatting(
-        ((grid["top"] - grid["bottom"]) / (grid["number_of_levels"] - 1)),
-        "price"
-    )
-    order_size = bot.value_formatting(
-        grid["deposit"] / grid["number_of_levels"],
-        "price"
-    )
-    requests.patch(
-        url=f"{BACKEND_URL}/api/grids/{grid['id']}/",
-        data={"step": step, "order_size": order_size}
-    )
-    if grid["number_of_levels"] % 2 == 0:
-        middle = bot.value_formatting(
-            (grid["top"] + grid["bottom"]) / 2,
-            "price"
-        )
-        cur_price = bot.value_formatting(bot.check_price(), "price")
-        levels = []
-        for ind in range(int(grid["number_of_levels"] / 2)):
-            init_top_price = middle + (0.5 + ind) * step
-            init_bottom_price = middle - (0.5 + ind) * step
-            right_pos_top = init_top_price >= cur_price
-            right_pos_bottom = init_bottom_price < cur_price
-            top_price = bot.value_formatting(
-                init_top_price if right_pos_top else
-                init_top_price - step,
-                "price"
-            )
-            bottom_price = bot.value_formatting(
-                init_bottom_price if right_pos_bottom else
-                init_bottom_price + step,
-                "price"
-            )
-            top_quantity = bot.value_formatting(
-                order_size / top_price,
-                "quantity"
-            )
-            bottom_quantity = bot.value_formatting(
-                order_size / bottom_price,
-                "quantity"
-            )
-            top_level = {
-                "side": "sell" if right_pos_top else "buy",
-                "order_id": None,
-                "price": top_price,
-                "quantity": top_quantity,
-                "inverse": False if right_pos_top else True,
-                "grid": grid["id"],
-                "deal": ""
-            }
-            bottom_level = {
-                "side": 'buy' if right_pos_bottom else "sell",
-                "order_id": None,
-                "price": bottom_price,
-                "quantity": bottom_quantity,
-                "inverse": False if right_pos_bottom else True,
-                "grid": grid["id"],
-                "deal": ""
-            }
-            levels.append(top_level)
-            levels.append(bottom_level)
-
-        req_token_balance = 0
-        for level in levels:
-            if level["side"] == "sell":
-                req_token_balance += level["quantity"]
-            if level["inverse"]:
-                ticker = grid["ticker"]["id"]
-                init_price = bot.value_formatting(
-                    level["price"] - step
-                    if level["side"] == "sell"
-                    else level["price"] + step,
-                    "price"
-                )
-                side = "long" if level["side"] == "sell" else "short"
-                deal = {
-                    "ticker": ticker,
-                    "side": side,
-                    "quantity": level["quantity"],
-                    "entry_price": init_price,
-                    "trader": bot.trader_id
-                }
-                deal_info = requests.post(
-                    url=f"{BACKEND_URL}/api/deals/",
-                    data=deal
-                ).json()
-                level["deal"] = deal_info["id"]
-
-        token_balance = bot.get_balance(bot.token)
-        if token_balance < req_token_balance:
-            logger.debug("Not enough tokens")
-            required_qty = bot.value_formatting(
-                (req_token_balance - token_balance) *
-                SAFETY_FACTOR,
-                "quantity"
-            )
-            bot.create_market_order(
-                side="buy",
-                quantity=required_qty,
-                market_unit="baseCoin"
-            )
-        elif token_balance > req_token_balance:
-            logger.debug("Excess tokens")
-            excess_qty = bot.value_formatting(
-                token_balance - req_token_balance,
-                "quantity"
-            )
-            cur_price = bot.value_formatting(bot.check_price(), "price")
-            if excess_qty * cur_price >= MINIMUM_ORDER_SIZE:
-                bot.create_market_order(
-                    side="sell",
-                    quantity=excess_qty,
-                    market_unit="baseCoin"
-                )
-        else:
-            pass
-
-        for level in levels:
-            order_id = bot.create_limit_order(
-                side=level["side"],
-                quantity=level["quantity"],
-                price=level["price"]
-            )
-            level["order_id"] = order_id
-            requests.post(f"{BACKEND_URL}/api/levels/", data=level)
-        logger.debug("Grid completed")
-        return True
-
-
-def update_deposit(trader, trading_bot):
-    """Updates the deposit field for the trader and grid."""
-    logger.debug("Update deposit and grid")
-    balance = trading_bot.get_balance()
-    requests.patch(
-        url=f"{BACKEND_URL}/api/traders/{trading_bot.trader_id}/",
-        data={"current_deposit": balance}
-    )
-    grid_deposit = balance - trader["lock"]
-    grid = trader["grid"]
-    order_size = trading_bot.value_formatting(
-        grid_deposit / grid["number_of_levels"],
-        "price"
-    )
-    requests.patch(
-        url=f"{BACKEND_URL}/api/grids/{grid['id']}/",
-        data={"deposit": grid_deposit, "order_size": order_size})
-    trading_bot.grid_settings = requests.get(
-        f"{BACKEND_URL}/api/grids/{grid['id']}/"
-    ).json()
-
-
-def finish_trading(trading_bot):
-    trading_bot.cancel_all_orders()
-    token_balance = trading_bot.value_formatting(
-        trading_bot.get_balance(trading_bot.token), "quantity")
-    trading_bot.create_market_order(
-        side="sell",
-        quantity=token_balance,
-        market_unit="baseCoin"
-    )
-    requests.patch(
-        url=f"{BACKEND_URL}/api/grids/{trading_bot.grid_settings['id']}/",
-        data={"installed": False}
-    )
