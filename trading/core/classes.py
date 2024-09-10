@@ -2,7 +2,6 @@ import logging
 from decimal import Decimal, ROUND_FLOOR
 
 from core.utils import get_exchange_client
-from exchange import bybit
 
 
 logger = logging.getLogger(__name__)
