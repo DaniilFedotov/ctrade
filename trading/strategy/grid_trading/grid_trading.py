@@ -1,21 +1,22 @@
 import logging
 import time
 
-from config import CHECK_TIME_SEC, SAFETY_FACTOR, MINIMUM_ORDER_SIZE, BACKEND_URL
+from config import CHECK_TIME_SEC
 from core.classes import TradingBot
-from core.managers import DealManager, LevelManager, TraderManager
-from strategy.grid_trading.utils import finish_trading, install_grid, update_state
+from core.managers import DealManager, GridManager, LevelManager, TraderManager
+from strategy.grid_trading.utils import install_grid, update_state
 
 
 logger = logging.getLogger(__name__)
 
 
-def trading(trading_bot: TradingBot):
+def trading_process(trading_bot: TradingBot):
     """Main trading function."""
     logger.debug("Start trading")
     trader = TraderManager.get_trader(
         trader_id=trading_bot.trader_id
     )
+    logger.debug(f"Trader: {trader}")
     if not trader["initial_deposit"]:
         logger.debug("Get initial_deposit")
         balance = trading_bot.get_balance()
@@ -26,19 +27,16 @@ def trading(trading_bot: TradingBot):
                 "current_deposit": balance
             }
         )
-    grid_installed = trader["grid"]["installed"]
-    if not grid_installed:
-        logger.debug("Grid not installed")
-    else:
-        logger.debug("Grid already installed")
     grid_installed = install_grid(trading_bot)
+    logger.debug(f"Grid installed : {grid_installed}")
     while grid_installed:
         logger.debug("Start checking orders")
         trader = TraderManager.get_trader(
             trader_id=trading_bot.trader_id
         )
+        logger.debug(f"Trader: {trader}")
         if not trader["working"]:
-            finish_trading(trading_bot)
+            logger.debug(f"Trader status: {trader['working']}")
             break
         cur_grid = trader["grid"]
         cur_levels = trader["grid"]["levels"]
@@ -47,8 +45,10 @@ def trading(trading_bot: TradingBot):
                 order_id=level["order_id"],
                 closed=True
             )
+            logger.debug(f"Order info: {order_info}")
             if order_info:
                 order_status = order_info[0]["orderStatus"]
+                logger.debug(f"Order status: {order_status}")
                 if order_status == "Filled":
                     logger.debug("Find filled order")
                     if level["inverse"]:
@@ -64,19 +64,26 @@ def trading(trading_bot: TradingBot):
                         deal = DealManager.create_deal(
                             deal_data={
                                 "ticker": ticker_id,
-                                "side": "long" if level["side"] == "buy" else "short",
+                                "side": ("long"
+                                         if level["side"] == "buy"
+                                         else "short"),
                                 "quantity": level["quantity"],
                                 "entry_price": level["price"],
                                 "trader": trading_bot.trader_id
                             }
                         )
+                        logger.debug(f"Deal: {deal}")
                         level["deal"] = deal["id"]
                     next_price = trading_bot.trading_pair.value_formatting(
-                        value=level["price"] - cur_grid["step"] if level["side"] == "sell" else level["price"] + cur_grid["step"],
+                        value=(level["price"] - cur_grid["step"]
+                               if level["side"] == "sell"
+                               else level["price"] + cur_grid["step"]),
                         parameter="price"
                     )
                     next_quantity = trading_bot.trading_pair.value_formatting(
-                        value=cur_grid["order_size"] / next_price,
+                        value=(cur_grid["order_size"] / next_price
+                               if level["inverse"]
+                               else level["quantity"]),
                         parameter="quantity"
                     )
                     next_level = {
@@ -92,10 +99,14 @@ def trading(trading_bot: TradingBot):
                         quantity=next_level["quantity"],
                         price=next_level["price"]
                     )
-                    next_level["order_id"] = order_id
+                    logger.debug(f"Order id: {order_id}")
                     LevelManager.update_level(
                         level_id=level["id"],
                         level_data=next_level
                     )
+                    logger.debug(f"Next level: {next_level}")
                     trading_bot = update_state(trading_bot)
         time.sleep(CHECK_TIME_SEC)
+        grid_installed = GridManager.get_grid(
+            grid_id=trading_bot.grid["id"]
+        )["installed"]
