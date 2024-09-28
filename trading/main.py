@@ -17,7 +17,7 @@ def check_activity():
         traders = TraderManager.get_traders()
         for trader in traders:
             if trader["working"]:
-                logger.debug(f"Trader have status working")
+                logger.debug("Trader have status working")
                 return TradingBot(trader=trader)
         return None
     except Exception as exc:

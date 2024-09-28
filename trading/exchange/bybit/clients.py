@@ -31,9 +31,9 @@ class BybitClient:
                 coin=coin
             )
             if coin:
-                qty = float(balance["result"]["list"][0]["coin"][0]["equity"])
-                qty_usd = float(balance["result"]["list"][0]["coin"][0]["usdValue"])
-                return qty_usd if in_usd else qty
+                qty = balance["result"]["list"][0]["coin"][0]["equity"]
+                qty_usd = balance["result"]["list"][0]["coin"][0]["usdValue"]
+                return float(qty_usd if in_usd else qty)
             return float(balance["result"]["list"][0]["totalEquity"])
 
     def check_price(self, symbol: str):
@@ -45,8 +45,9 @@ class BybitClient:
             )
             return float(tickers["result"]["list"][0]["lastPrice"])
 
-    def place_order(self, symbol: str, side: str,  order_type: str, quantity: float,
-                    price: float | None = None, market_unit: str | None = None):
+    def place_order(self, symbol: str, side: str,  order_type: str,
+                    quantity: float, price: float | None = None,
+                    market_unit: str | None = None):
         """Places an order and gives its ID."""
         with BybitWrapper() as session:
             placed_order = session.place_order(

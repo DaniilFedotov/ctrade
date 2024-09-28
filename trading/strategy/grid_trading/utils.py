@@ -25,7 +25,7 @@ def install_grid(trading_bot: TradingBot):
         trader_data={"lock": balance - grid["deposit"]}
     )
     step = trading_bot.trading_pair.value_formatting(
-        value=((grid["top"] - grid["bottom"]) / (grid["number_of_levels"] - 1)),
+        value=(grid["top"] - grid["bottom"]) / (grid["number_of_levels"] - 1),
         parameter="price"
     )
     order_size = trading_bot.trading_pair.value_formatting(
@@ -62,7 +62,9 @@ def install_grid(trading_bot: TradingBot):
             parameter="price"
         )
         bottom_price = trading_bot.trading_pair.value_formatting(
-            value=init_bottom_price if right_pos_bottom else init_bottom_price + step,
+            value=(init_bottom_price
+                   if right_pos_bottom
+                   else init_bottom_price + step),
             parameter="price"
         )
 
@@ -76,8 +78,10 @@ def install_grid(trading_bot: TradingBot):
         )
 
         logger.debug(f"Index: {ind}\n"
-                     f"Initial top price: {init_top_price}, initial bottom price: {init_bottom_price}\n"
-                     f"Right position top: {right_pos_top}, right position bottomL {right_pos_bottom}\n"
+                     f"Initial top price: {init_top_price}"
+                     f"Initial bottom price: {init_bottom_price}\n"
+                     f"Right position top: {right_pos_top}"
+                     f"Right position bottomL {right_pos_bottom}\n"
                      f"Top price: {top_price}, bottom price: {bottom_price}\n"
                      f"Top quantity: {top_qty}, bottom quantity: {bottom_qty}")
 
@@ -109,7 +113,9 @@ def install_grid(trading_bot: TradingBot):
         if level["inverse"]:
             ticker = grid["ticker"]["id"]
             entry_price = trading_bot.trading_pair.value_formatting(
-                value=level["price"] - step if level["side"] == "sell" else level["price"] + step,
+                value=(level["price"] - step
+                       if level["side"] == "sell"
+                       else level["price"] + step),
                 parameter="price"
             )
             side = "long" if level["side"] == "sell" else "short"
@@ -126,7 +132,9 @@ def install_grid(trading_bot: TradingBot):
             logger.debug(f"Deal info: {deal_info}")
             level["deal"] = deal_info["id"]
 
-    token_balance = trading_bot.get_balance(coin=trading_bot.trading_pair.token)
+    token_balance = trading_bot.get_balance(
+        coin=trading_bot.trading_pair.token
+    )
     logger.debug(f"Token balance: {token_balance}")
     if token_balance < required_token_balance:
         required_qty = trading_bot.trading_pair.value_formatting(
@@ -150,7 +158,7 @@ def install_grid(trading_bot: TradingBot):
             parameter="price"
         )
         if excess_qty * cur_price >= MINIMUM_ORDER_SIZE:
-            logger.debug(f"Create market order")
+            logger.debug("Create market order")
             trading_bot.create_market_order(
                 side="sell",
                 quantity=excess_qty,

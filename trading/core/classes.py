@@ -35,7 +35,8 @@ class TradingBot:
             price=price
         )
 
-    def create_market_order(self, side: str, quantity: float, market_unit: str):
+    def create_market_order(self, side: str, quantity: float,
+                            market_unit: str):
         """Places market order to buy or sell a coin and return order_id."""
         return self.exchange_client.place_order(
             symbol=self.trading_pair.ticker,
