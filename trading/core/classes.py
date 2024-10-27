@@ -52,6 +52,9 @@ class TradingBot:
             return self.exchange_client.get_order_history(order_id=order_id)
         return self.exchange_client.get_open_orders(order_id=order_id)
 
+    def get_open_orders(self, order_id: str | None = None):
+        return self.exchange_client.get_open_orders(order_id=order_id)
+
     def cancel_all_orders(self):
         """Cancels all orders."""
         self.exchange_client.cancel_all_orders()
