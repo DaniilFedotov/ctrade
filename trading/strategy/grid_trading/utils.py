@@ -25,7 +25,7 @@ def install_grid(trading_bot: TradingBot):
         trader_data={"lock": balance - grid["deposit"]}
     )
     step = trading_bot.trading_pair.value_formatting(
-        value=(grid["top"] - grid["bottom"]) / (grid["number_of_levels"] - 1),
+        value=(grid["top"] - grid["bottom"]) / (grid["number_of_levels"] + 1),
         parameter="price"
     )
     order_size = trading_bot.trading_pair.value_formatting(
