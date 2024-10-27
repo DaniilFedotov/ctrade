@@ -183,12 +183,11 @@ def install_grid(trading_bot: TradingBot):
         grid_data={"installed": True}
     )
     logger.debug("Grid installed")
-    return True
 
 
-def finish_trading(trading_bot: TradingBot):
-    """Close the trade."""
-    logger.debug("Finish trading")
+def remove_grid(trading_bot: TradingBot):
+    """Removes trading grid."""
+    logger.debug("Remove grid")
     reset_progress(trading_bot=trading_bot)
     token_balance = trading_bot.trading_pair.value_formatting(
         value=trading_bot.get_balance(trading_bot.trading_pair.token),
@@ -200,7 +199,7 @@ def finish_trading(trading_bot: TradingBot):
     )
     logger.debug(f"Token balance: {token_balance}"
                  f"Current price: {cur_price}")
-    if token_balance * cur_price < MINIMUM_ORDER_SIZE:
+    if token_balance * cur_price >= MINIMUM_ORDER_SIZE:
         trading_bot.create_market_order(
             side="sell",
             quantity=token_balance,

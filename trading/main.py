@@ -37,7 +37,7 @@ def main():
             except Exception as exc:
                 logger.debug(f"Exc: {exc}")
             finally:
-                utils.finish_trading(trading_bot=trading_bot)
+                utils.remove_grid(trading_bot=trading_bot)
         time.sleep(CHECK_TIME_SEC)
 
 
