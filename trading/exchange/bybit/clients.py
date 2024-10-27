@@ -61,21 +61,23 @@ class BybitClient:
             )
             return placed_order["result"]["orderId"]
 
-    def get_open_orders(self, order_id: str):
+    def get_open_orders(self, order_id: str | None = None, limit: int = 50):
         """Receives information about an open order by ID."""
         with BybitWrapper() as session:
             order_info = session.get_open_orders(
                 category=self.category,
-                orderId=order_id
+                orderId=order_id,
+                limit=limit
             )
             return order_info["result"]["list"]
 
-    def get_order_history(self, order_id: str):
+    def get_order_history(self, order_id: str | None = None, limit: int = 50):
         """Receives information about a closed order by ID."""
         with BybitWrapper() as session:
             order_info = session.get_order_history(
                 category=self.category,
-                orderId=order_id
+                orderId=order_id,
+                limit=limit
             )
             return order_info["result"]["list"]
 
