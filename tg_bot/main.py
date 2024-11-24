@@ -1,18 +1,11 @@
-import os
-
-from dotenv import load_dotenv
 from telegram import Bot
 from telegram.ext import Updater, Filters, MessageHandler, CommandHandler
 
-from commands import (MSG_MAX_SIZE_PC, start_trading, stop_trading,
-                      get_revenue, get_daily, get_bot_id,
-                      get_tickers, get_grids, get_traders)
+from commands import (start_trading, stop_trading, get_revenue,
+                      get_daily, get_bot_id, get_tickers,
+                      get_or_create_grids, get_or_create_traders)
+from config import TELEGRAM_TOKEN, MSG_MAX_SIZE_PC
 
-
-load_dotenv()
-
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 HELP_TEXT = ("Bot is running. You can use the following commands:\n"
              "/start x - start existing trading bot with id x;\n"
@@ -55,8 +48,8 @@ def main():
     updater.dispatcher.add_handler(CommandHandler("yesterday", get_daily))
     updater.dispatcher.add_handler(CommandHandler("id", get_bot_id))
     updater.dispatcher.add_handler(CommandHandler("tickers", get_tickers))
-    updater.dispatcher.add_handler(CommandHandler("grids", get_grids))
-    updater.dispatcher.add_handler(CommandHandler("traders", get_traders))
+    updater.dispatcher.add_handler(CommandHandler("grids", get_or_create_grids))
+    updater.dispatcher.add_handler(CommandHandler("traders", get_or_create_traders))
     updater.dispatcher.add_handler(CommandHandler("help", get_help))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, get_help))
     updater.start_polling(poll_interval=1.0)

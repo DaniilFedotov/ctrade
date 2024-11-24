@@ -2,9 +2,10 @@ import datetime
 
 import requests
 
+from config import BACKEND_URL, MSG_MAX_SIZE_PC, api_requests_mapping
 
-API_URL = "http://backend:8000/api"
-MSG_MAX_SIZE_PC = 10
+
+API_URL = f"{BACKEND_URL}/api"
 
 
 def start_trading(update, context):
@@ -13,33 +14,26 @@ def start_trading(update, context):
     if len(command) == 2:
         bot_id = int(command[1])
         trader = requests.get(
-            f"{API_URL}/traders/{bot_id}/"
+            f"{BACKEND_URL}{api_requests_mapping['traders']}/{bot_id}/"
         ).json()
         if trader["working"]:
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="This bot is already running."
-            )
+            text="This bot is already running."
         else:
             response = requests.patch(
-                f"{API_URL}/traders/{bot_id}/",
+                f"{BACKEND_URL}{api_requests_mapping['traders']}/{bot_id}/",
                 data={"working": True}
             )
             if response.status_code == 200:
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=f"The bot {bot_id} is running."
-                )
+                text=f"The bot {bot_id} is running."
             else:
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text="Unexpected error."
-                )
+                text = "Unexpected error."
     else:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Bot number not specified."
-        )
+        text = "Bot number not specified."
+
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=text
+    )
 
 
 def stop_trading(update, context):
@@ -48,33 +42,26 @@ def stop_trading(update, context):
     if len(command) == 2:
         bot_id = int(command[1])
         trader = requests.get(
-            f"{API_URL}/traders/{bot_id}/"
+            f"{BACKEND_URL}{api_requests_mapping['traders']}/{bot_id}/"
         ).json()
         if trader["working"]:
             response = requests.patch(
-                f"{API_URL}/traders/{bot_id}/",
+                f"{BACKEND_URL}{api_requests_mapping['traders']}/{bot_id}/",
                 data={"working": False}
             )
             if response.status_code == 200:
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text=f"The bot {bot_id} is stopped."
-                )
+                text=f"The bot {bot_id} is stopped."
             else:
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text="Unexpected error."
-                )
+                text="Unexpected error."
         else:
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="This bot has already been stopped."
-            )
+            text="This bot has already been stopped."
     else:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Bot number not specified."
-        )
+        text="Bot number not specified."
+
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=text
+    )
 
 
 def get_revenue(update, context):
@@ -84,7 +71,7 @@ def get_revenue(update, context):
         num_of_deals = int(command[1])
     else:
         num_of_deals = 5
-    deals = requests.get(f"{API_URL}/deals/").json()
+    deals = requests.get(f"{BACKEND_URL}{api_requests_mapping['deals']}/").json()
     revenue = 0
     for i in range(num_of_deals):
         deal = deals[i]
@@ -98,22 +85,14 @@ def get_revenue(update, context):
 
 def get_daily(update, context):
     """Calculates revenue for today's or yesterday's transactions."""
-    deals = requests.get(f"{API_URL}/deals/").json()
+    deals = requests.get(f"{BACKEND_URL}{api_requests_mapping['deals']}/").json()
     today = datetime.datetime.today()
+    day = "today" if update["message"]["text"] == "/daily" else "yesterday"
+    day_date = (today if day == "today" else today - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     revenue = 0
-    if update["message"]["text"] == "/daily":
-        day = "today"
-        for deal in deals:
-            if (deal["opening_date"] == today.strftime("%Y-%m-%d")
-                    and deal["closed"]):
-                revenue += deal["revenue"]
-    else:
-        day = "yesterday"
-        yesterday = today - datetime.timedelta(days=1)
-        for deal in deals:
-            if (deal["opening_date"] == yesterday.strftime("%Y-%m-%d")
-                    and deal["closed"]):
-                revenue += deal["revenue"]
+    for deal in deals:
+        if deal["opening_date"] == day_date and deal["closed"]:
+            revenue += deal["revenue"]
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=f"Revenue for {day}: {revenue} USD."
@@ -122,25 +101,22 @@ def get_daily(update, context):
 
 def get_bot_id(update, context):
     """Give the id of a running trading bot."""
-    traders = requests.get(f"{API_URL}/traders/").json()
+    traders = requests.get(f"{BACKEND_URL}{api_requests_mapping['traders']}/").json()
     bot_id = None
     for trader in traders:
         if trader["working"]:
             bot_id = trader["id"]
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text=f"Id of a running trading bot: {bot_id}."
-            )
-    if bot_id is None:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="No running bots found."
-        )
+            break
+    text = f"Id of a running trading bot: {bot_id}." if bot_id else "No running bots found."
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=text
+    )
 
 
 def get_tickers(update, context):
     """Displays a list of available tickers."""
-    tickers = requests.get(f"{API_URL}/tickers/").json()
+    tickers = requests.get(f"{BACKEND_URL}{api_requests_mapping['tickers']}/").json()
     names = ""
     for ticker in tickers:
         names += f"id: {ticker['id']} name: {ticker['name']}\n"
@@ -150,11 +126,11 @@ def get_tickers(update, context):
     )
 
 
-def get_grids(update, context):
+def get_or_create_grids(update, context):
     """Displays a list of available grids or create a new one."""
     command_list = update["message"]["text"].split(" ")
     if len(command_list) == 1:
-        grids = requests.get(f"{API_URL}/grids/").json()
+        grids = requests.get(f"{BACKEND_URL}{api_requests_mapping['grids']}/").json()
         data = ""
         for i in range(MSG_MAX_SIZE_PC):
             data += (
@@ -166,13 +142,10 @@ def get_grids(update, context):
                 f"ticker: {grids[i]['ticker']['name']}\n"
                 "---------------\n"
             )
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"Last {MSG_MAX_SIZE_PC} created grids: \n{data}"
-        )
+        text = f"Last {MSG_MAX_SIZE_PC} created grids: \n{data}"
     elif len(command_list) == 2:
         grid_id = command_list[-1]
-        grid = requests.get(f"{API_URL}/grids/{grid_id}/").json()
+        grid = requests.get(f"{BACKEND_URL}{api_requests_mapping['deals']}/{grid_id}/").json()
         data = (
             f"id: {grid['id']}\n"
             f"bottom: {grid['bottom']}\n"
@@ -181,10 +154,7 @@ def get_grids(update, context):
             f"deposit: {grid['deposit']}\n"
             f"ticker: {grid['ticker']['name']}"
         )
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"{data}"
-        )
+        text = f"{data}"
     elif len(command_list) == 6:
         grid = {
             "bottom": float(command_list[-5]),
@@ -193,23 +163,21 @@ def get_grids(update, context):
             "deposit": float(command_list[-2]),
             "ticker": int(command_list[-1])
         }
-        grid_info = requests.post(f"{API_URL}/grids/", data=grid).json()
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"Grid created. id: {grid_info['id']}."
-        )
+        grid_info = requests.post(f"{BACKEND_URL}{api_requests_mapping['grids']}/", data=grid).json()
+        text = f"Grid created. id: {grid_info['id']}."
     else:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Wrong command. Read the instructions."
-        )
+        text = "Wrong command. Read the instructions."
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=text
+    )
 
 
-def get_traders(update, context):
+def get_or_create_traders(update, context):
     """Displays a list of available traders or create a new one."""
     command_list = update["message"]["text"].split(" ")
     if len(command_list) == 1:
-        traders = requests.get(f"{API_URL}/traders/").json()
+        traders = requests.get(f"{BACKEND_URL}{api_requests_mapping['traders']}/").json()
         data = ""
         for i in range(MSG_MAX_SIZE_PC):
             data += (
@@ -222,13 +190,10 @@ def get_traders(update, context):
                 f"exchange: {traders[i]['exchange']}\n"
                 f"grid id: {traders[i]['grid']['id']}\n"
                 "---------------\n")
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"Last {MSG_MAX_SIZE_PC} created traders: \n{data}"
-        )
+        text = f"Last {MSG_MAX_SIZE_PC} created traders: \n{data}"
     elif len(command_list) == 2:
         trader_id = command_list[-1]
-        trader = requests.get(f"{API_URL}/traders/{trader_id}/").json()
+        trader = requests.get(f"{BACKEND_URL}{api_requests_mapping['traders']}/{trader_id}/").json()
         data = (
             f"id: {trader['id']}\n"
             f"creation_date: {trader['creation_date']}\n"
@@ -239,22 +204,17 @@ def get_traders(update, context):
             f"exchange: {trader['exchange']}\n"
             f"grid id: {trader['grid']['id']}"
         )
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"{data}"
-        )
+        text = f"{data}"
     elif len(command_list) == 3:
         trader = {
             "exchange": command_list[-2],
             "grid": int(command_list[-1])
         }
-        trader_info = requests.post(f"{API_URL}/traders/", data=trader).json()
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"Trader created. id: {trader_info['id']}."
-        )
+        trader_info = requests.post(f"{BACKEND_URL}{api_requests_mapping['traders']}/", data=trader).json()
+        text = f"Trader created. id: {trader_info['id']}."
     else:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Wrong command. Read the instructions."
-        )
+        text = "Wrong command. Read the instructions."
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=text
+    )
