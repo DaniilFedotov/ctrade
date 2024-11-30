@@ -52,7 +52,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler("traders", get_or_create_traders))
     updater.dispatcher.add_handler(CommandHandler("help", get_help))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, get_help))
-    updater.start_polling(poll_interval=1.0)
+    updater.start_polling(poll_interval=2.0)
     updater.idle()
 
 
