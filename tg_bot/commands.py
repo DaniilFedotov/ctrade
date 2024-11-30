@@ -2,10 +2,8 @@ import datetime
 
 import requests
 
-from config import BACKEND_URL, MSG_MAX_SIZE_PC, api_requests_mapping
-
-
-API_URL = f"{BACKEND_URL}/api"
+from config import AVAILABLE_EXCHANGES, BACKEND_URL, MSG_MAX_SIZE_PC, api_requests_mapping
+from utils import validate_create_grid_request
 
 
 def start_trading(update, context):
@@ -16,6 +14,12 @@ def start_trading(update, context):
         trader = requests.get(
             f"{BACKEND_URL}{api_requests_mapping['traders']}/{bot_id}/"
         ).json()
+        if "Not found." in trader.values():
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Trader does not exist."
+            )
+            return
         if trader["working"]:
             text="This bot is already running."
         else:
@@ -44,6 +48,12 @@ def stop_trading(update, context):
         trader = requests.get(
             f"{BACKEND_URL}{api_requests_mapping['traders']}/{bot_id}/"
         ).json()
+        if "Not found." in trader.values():
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Trader does not exist."
+            )
+            return
         if trader["working"]:
             response = requests.patch(
                 f"{BACKEND_URL}{api_requests_mapping['traders']}/{bot_id}/",
@@ -72,6 +82,12 @@ def get_revenue(update, context):
     else:
         num_of_deals = 5
     deals = requests.get(f"{BACKEND_URL}{api_requests_mapping['deals']}/").json()
+    if len(deals) < num_of_deals:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="The requested number of deals is greater than number of closed deals."
+        )
+        num_of_deals = len(deals)
     revenue = 0
     for i in range(num_of_deals):
         deal = deals[i]
@@ -117,6 +133,12 @@ def get_bot_id(update, context):
 def get_tickers(update, context):
     """Displays a list of available tickers."""
     tickers = requests.get(f"{BACKEND_URL}{api_requests_mapping['tickers']}/").json()
+    if not tickers:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="The tickers do not exist."
+        )
+        return
     names = ""
     for ticker in tickers:
         names += f"id: {ticker['id']} name: {ticker['name']}\n"
@@ -131,6 +153,12 @@ def get_or_create_grids(update, context):
     command_list = update["message"]["text"].split(" ")
     if len(command_list) == 1:
         grids = requests.get(f"{BACKEND_URL}{api_requests_mapping['grids']}/").json()
+        if not grids:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="The grids do not exist."
+            )
+            return
         data = ""
         for i in range(MSG_MAX_SIZE_PC):
             data += (
@@ -145,7 +173,13 @@ def get_or_create_grids(update, context):
         text = f"Last {MSG_MAX_SIZE_PC} created grids: \n{data}"
     elif len(command_list) == 2:
         grid_id = command_list[-1]
-        grid = requests.get(f"{BACKEND_URL}{api_requests_mapping['deals']}/{grid_id}/").json()
+        grid = requests.get(f"{BACKEND_URL}{api_requests_mapping['grids']}/{grid_id}/").json()
+        if "Not found." in grid.values():
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Grid does not exist."
+            )
+            return
         data = (
             f"id: {grid['id']}\n"
             f"bottom: {grid['bottom']}\n"
@@ -156,15 +190,18 @@ def get_or_create_grids(update, context):
         )
         text = f"{data}"
     elif len(command_list) == 6:
-        grid = {
-            "bottom": float(command_list[-5]),
-            "top": float(command_list[-4]),
-            "number_of_levels": int(command_list[-3]),
-            "deposit": float(command_list[-2]),
-            "ticker": int(command_list[-1])
-        }
+        grid, validation_error_text = validate_create_grid_request(command_list)
+        if validation_error_text:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=validation_error_text
+            )
+            return
         grid_info = requests.post(f"{BACKEND_URL}{api_requests_mapping['grids']}/", data=grid).json()
-        text = f"Grid created. id: {grid_info['id']}."
+        if "id" in grid_info:
+            text = f"Grid created. id: {grid_info['id']}."
+        else:
+            text = "Create grid error."
     else:
         text = "Wrong command. Read the instructions."
     context.bot.send_message(
@@ -178,6 +215,12 @@ def get_or_create_traders(update, context):
     command_list = update["message"]["text"].split(" ")
     if len(command_list) == 1:
         traders = requests.get(f"{BACKEND_URL}{api_requests_mapping['traders']}/").json()
+        if not traders:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="The traders do not exist."
+            )
+            return
         data = ""
         for i in range(MSG_MAX_SIZE_PC):
             data += (
@@ -194,7 +237,13 @@ def get_or_create_traders(update, context):
     elif len(command_list) == 2:
         trader_id = command_list[-1]
         trader = requests.get(f"{BACKEND_URL}{api_requests_mapping['traders']}/{trader_id}/").json()
-        data = (
+        if "Not found." in trader.values():
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Trader does not exist."
+            )
+            return
+        text = (
             f"id: {trader['id']}\n"
             f"creation_date: {trader['creation_date']}\n"
             f"working: {trader['working']}\n"
@@ -204,11 +253,25 @@ def get_or_create_traders(update, context):
             f"exchange: {trader['exchange']}\n"
             f"grid id: {trader['grid']['id']}"
         )
-        text = f"{data}"
     elif len(command_list) == 3:
+        exchange = command_list[-2]
+        grid_id = int(command_list[-1])
+        if exchange not in AVAILABLE_EXCHANGES:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="This exchange is not supported."
+            )
+            return
+        grid = requests.get(f"{BACKEND_URL}{api_requests_mapping['grids']}/{grid_id}/").json()
+        if "Not found." in grid.values():
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Grid does not exist."
+            )
+            return
         trader = {
-            "exchange": command_list[-2],
-            "grid": int(command_list[-1])
+            "exchange": exchange,
+            "grid": grid_id
         }
         trader_info = requests.post(f"{BACKEND_URL}{api_requests_mapping['traders']}/", data=trader).json()
         text = f"Trader created. id: {trader_info['id']}."
